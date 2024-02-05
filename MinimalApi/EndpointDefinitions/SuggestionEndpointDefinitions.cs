@@ -17,6 +17,7 @@ namespace MinimalApi.EndpointDefinitions
             suggestions.MapGet("/{id}", GetSuggestionById)
             .WithName("GetSuggestionById");
             suggestions.MapPut("/{suggestionId}", UpdateSuggestion);
+            suggestions.MapDelete("/{suggestionId}", DeleteSuggestion);
         }
 
         private async Task<IResult> GetSuggestions(IMediator mediator)
@@ -41,6 +42,13 @@ namespace MinimalApi.EndpointDefinitions
         private async Task<IResult> UpdateSuggestion(IMediator mediator, int suggestionId, SuggestionForUpdateDto suggestion)
         {
             var command = new UpdateSuggestion(suggestion);
+            var result = await mediator.Send(command);
+            return result.IsSuccess ? TypedResults.Ok(result.Value) : TypedResults.NotFound(result.Error);
+        }
+
+        private async Task<IResult> DeleteSuggestion(IMediator mediator, int suggestionId)
+        {
+            var command = new DeleteSuggestion(suggestionId);
             var result = await mediator.Send(command);
             return result.IsSuccess ? TypedResults.Ok(result.Value) : TypedResults.NotFound(result.Error);
         }
