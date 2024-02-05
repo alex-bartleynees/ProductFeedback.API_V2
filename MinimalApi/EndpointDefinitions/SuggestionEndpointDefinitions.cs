@@ -1,4 +1,3 @@
-using Application.Common;
 using Application.Common.Models;
 using Application.Suggestions.Commands;
 using Application.Suggestions.Queries;
@@ -17,6 +16,7 @@ namespace MinimalApi.EndpointDefinitions
             suggestions.MapPost("/", CreateSuggestion);
             suggestions.MapGet("/{id}", GetSuggestionById)
             .WithName("GetSuggestionById");
+            suggestions.MapPut("/{suggestionId}", UpdateSuggestion);
         }
 
         private async Task<IResult> GetSuggestions(IMediator mediator)
@@ -35,6 +35,13 @@ namespace MinimalApi.EndpointDefinitions
         private async Task<IResult> GetSuggestionById(IMediator mediator, int id)
         {
             var result = await mediator.Send(new GetSuggestionById(id));
+            return result.IsSuccess ? TypedResults.Ok(result.Value) : TypedResults.NotFound(result.Error);
+        }
+
+        private async Task<IResult> UpdateSuggestion(IMediator mediator, int suggestionId, SuggestionForUpdateDto suggestion)
+        {
+            var command = new UpdateSuggestion(suggestion);
+            var result = await mediator.Send(command);
             return result.IsSuccess ? TypedResults.Ok(result.Value) : TypedResults.NotFound(result.Error);
         }
     }

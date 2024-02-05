@@ -1,4 +1,5 @@
 using Application.Common;
+using Application.Common.Models;
 using Domain.Entities;
 
 namespace Application.Abstractions
@@ -18,5 +19,7 @@ namespace Application.Abstractions
         Task<Result<User>> GetUser(int userId);
 
         Task<Result<int>> DeleteSuggestion(int suggestionId);
+
+        Task<Result<Suggestion>> UpdateSuggestion(int suggestionId, SuggestionForUpdateDto suggestion);
     }
 }

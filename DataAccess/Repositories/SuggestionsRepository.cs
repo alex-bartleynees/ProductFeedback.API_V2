@@ -1,5 +1,6 @@
 using Application.Abstractions;
 using Application.Common;
+using Application.Common.Models;
 using DataAccess.DbContexts;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -101,6 +102,33 @@ namespace DataAccess.Repositories
             }
 
             return Result<User>.Success(user);
+        }
+
+        public async Task<Result<Suggestion>> UpdateSuggestion(int suggestionId, SuggestionForUpdateDto suggestion)
+        {
+            var entityToUpdate = await _context.Suggestions
+                .Where(s => s.Id == suggestionId)
+                .Include(c => c.Comments)
+                .ThenInclude(c => c.User)
+                .Include(x => x.Comments)
+                .ThenInclude(r => r.Replies)
+                .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync();
+
+            if (entityToUpdate != null)
+            {
+                entityToUpdate.Title = suggestion.Title;
+                entityToUpdate.Upvotes = suggestion.Upvotes;
+                entityToUpdate.Category = suggestion.Category;
+                entityToUpdate.Status = suggestion.Status;
+                entityToUpdate.Description = suggestion.Description;
+
+                await _context.SaveChangesAsync();
+
+                return Result<Suggestion>.Success(entityToUpdate);
+            }
+
+            return Result<Suggestion>.Failure(new Error(404, "Not Found", $"Suggestion with id: {suggestion.Id} was not found"));
         }
     }
 }
