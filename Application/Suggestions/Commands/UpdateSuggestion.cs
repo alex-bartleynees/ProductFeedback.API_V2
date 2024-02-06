@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Abstractions;
 using Application.Common;
 using Application.Common.Models;
@@ -24,7 +20,15 @@ namespace Application.Suggestions.Commands
         {
             Guard.Against.Null(request);
 
-            var suggestion = request.suggestion;
+            var suggestion = new Suggestion()
+            {
+                Title = request.suggestion.Title,
+                Upvotes = request.suggestion.Upvotes,
+                Status = request.suggestion.Status,
+                Category = request.suggestion.Category,
+                Description = request.suggestion.Description
+            };
+
             return await _suggestionsRepository.UpdateSuggestion(suggestion.Id, suggestion);
         }
     }

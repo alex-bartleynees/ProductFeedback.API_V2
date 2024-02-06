@@ -104,15 +104,10 @@ namespace DataAccess.Repositories
             return Result<User>.Success(user);
         }
 
-        public async Task<Result<Suggestion>> UpdateSuggestion(int suggestionId, SuggestionForUpdateDto suggestion)
+        public async Task<Result<Suggestion>> UpdateSuggestion(int suggestionId, Suggestion suggestion)
         {
             var entityToUpdate = await _context.Suggestions
                 .Where(s => s.Id == suggestionId)
-                .Include(c => c.Comments)
-                .ThenInclude(c => c.User)
-                .Include(x => x.Comments)
-                .ThenInclude(r => r.Replies)
-                .ThenInclude(r => r.User)
                 .FirstOrDefaultAsync();
 
             if (entityToUpdate != null)
