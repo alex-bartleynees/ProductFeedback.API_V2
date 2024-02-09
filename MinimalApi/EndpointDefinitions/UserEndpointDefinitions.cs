@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Application.Common;
 using Application.Users.Queries;
+using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using MinimalApi.Abstractions;
 
 namespace MinimalApi.EndpointDefinitions
@@ -17,7 +16,7 @@ namespace MinimalApi.EndpointDefinitions
             users.MapGet("{userId}", GetUserById);
         }
 
-        private async Task<IResult> GetUserById(IMediator mediator, int userId)
+        private async Task<Results<Ok<User>, NotFound<Error>>> GetUserById(IMediator mediator, int userId)
         {
             var command = new GetUserById(userId);
             var result = await mediator.Send(command);

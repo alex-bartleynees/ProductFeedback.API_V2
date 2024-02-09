@@ -1,11 +1,16 @@
 using Application.Abstractions;
+using Application.Common.Models;
+using Application.Common.Validators;
 using Application.Suggestions.Commands;
 using DataAccess.DbContexts;
 using DataAccess.Repositories;
+using Domain.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MinimalApi.Abstractions;
 using MinimalApi.Middleware;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace MinimalApi.Extensions
 {
@@ -17,6 +22,12 @@ namespace MinimalApi.Extensions
             var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString");
             builder.Services.AddDbContext<SuggestionContext>(options => options.UseSqlServer(cs));
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
+            builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
+            builder.Services.AddScoped<IValidator<SuggestionForUpdateDto>, SuggestionForUpdateDtoValidator>();
+            builder.Services.AddFluentValidationAutoValidation(configuration =>
+            {
+                configuration.OverrideDefaultResultFactoryWith<ValidationErrorFactory>();
+            });
             builder.Services.AddMediatR(typeof(CreateSuggestion));
             builder.Services.AddCors(options =>
             {

@@ -1,8 +1,12 @@
+using Application.Common;
 using Application.Common.Models;
 using Application.Suggestions.Commands;
 using Application.Suggestions.Queries;
+using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using MinimalApi.Abstractions;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace MinimalApi.EndpointDefinitions
 {
@@ -10,7 +14,7 @@ namespace MinimalApi.EndpointDefinitions
     {
         public void RegisterEndpoints(WebApplication app)
         {
-            var suggestions = app.MapGroup("/api/suggestions");
+            var suggestions = app.MapGroup("/api/suggestions").AddFluentValidationAutoValidation(); ;
 
             suggestions.MapGet("/", GetSuggestions);
             suggestions.MapPost("/", CreateSuggestion);
@@ -20,7 +24,7 @@ namespace MinimalApi.EndpointDefinitions
             suggestions.MapDelete("/{suggestionId}", DeleteSuggestion);
         }
 
-        private async Task<IResult> GetSuggestions(IMediator mediator)
+        private async Task<Ok<IEnumerable<Suggestion>>> GetSuggestions(IMediator mediator)
         {
             var result = await mediator.Send(new GetSuggestions());
             return TypedResults.Ok(result);
@@ -33,20 +37,20 @@ namespace MinimalApi.EndpointDefinitions
             return Results.CreatedAtRoute("GetSuggestionById", new { result.Id }, result);
         }
 
-        private async Task<IResult> GetSuggestionById(IMediator mediator, int id)
+        private async Task<Results<Ok<Suggestion>, NotFound<Error>>> GetSuggestionById(IMediator mediator, int id)
         {
             var result = await mediator.Send(new GetSuggestionById(id));
             return result.IsSuccess ? TypedResults.Ok(result.Value) : TypedResults.NotFound(result.Error);
         }
 
-        private async Task<IResult> UpdateSuggestion(IMediator mediator, int suggestionId, SuggestionForUpdateDto suggestion)
+        private async Task<Results<Ok<Suggestion>, NotFound<Error>>> UpdateSuggestion(IMediator mediator, int suggestionId, SuggestionForUpdateDto suggestion)
         {
             var command = new UpdateSuggestion(suggestion);
             var result = await mediator.Send(command);
             return result.IsSuccess ? TypedResults.Ok(result.Value) : TypedResults.NotFound(result.Error);
         }
 
-        private async Task<IResult> DeleteSuggestion(IMediator mediator, int suggestionId)
+        private async Task<Results<Ok<int>, NotFound<Error>>> DeleteSuggestion(IMediator mediator, int suggestionId)
         {
             var command = new DeleteSuggestion(suggestionId);
             var result = await mediator.Send(command);
