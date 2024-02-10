@@ -8,6 +8,7 @@ using Domain.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using MinimalApi.Abstractions;
 using MinimalApi.Middleware;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
@@ -42,10 +43,27 @@ namespace MinimalApi.Extensions
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddProblemDetails();
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Suggestions API",
+                    Description = "Suggestions API documentation",
+                });
+            });
         }
 
         public static void RegisterAppConfig(this WebApplication app)
         {
+
+            var config = $"appsettings.{app.Environment}.json";
+            IConfigurationBuilder configBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json", true)
+                .AddJsonFile(config, true)
+                .AddEnvironmentVariables();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
