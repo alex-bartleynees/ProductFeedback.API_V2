@@ -1,8 +1,6 @@
 using Domain.Entities;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
 
 namespace DataAccess.DbContexts
 {
@@ -17,10 +15,9 @@ namespace DataAccess.DbContexts
 
         public DbSet<User> Users { get; set; } = null!;
 
-        public SuggestionContext(DbContextOptions<SuggestionContext> options, IHttpContextAccessor accessor) : base(options)
+        public SuggestionContext(IConfiguration configuration)
         {
-            var conn = Database.GetDbConnection() as SqlConnection;
-            conn!.AccessToken = accessor?.HttpContext?.Request.Headers["X-MS-TOKEN-AAD-ACCESS-TOKEN"];
+            Configuration = configuration;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
