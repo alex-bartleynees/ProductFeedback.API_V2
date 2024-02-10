@@ -22,6 +22,7 @@ namespace MinimalApi.Extensions
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString");
             builder.Services.AddDbContext<SuggestionContext>(options => options.UseSqlServer(cs));
+
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
             builder.Services.AddScoped<IValidator<SuggestionForUpdateDto>, SuggestionForUpdateDtoValidator>();
@@ -77,6 +78,12 @@ namespace MinimalApi.Extensions
 
             app.RegisterEndpointDefinitions();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<SuggestionContext>();
+                db.Database.Migrate();
+            }
         }
 
         public static void RegisterEndpointDefinitions(this WebApplication app)
