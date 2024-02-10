@@ -29,7 +29,7 @@ namespace Application.Suggestions.Commands
                 Description = request.suggestion.Description
             };
 
-            return await _suggestionsRepository.UpdateSuggestion(suggestion.Id, suggestion);
+            return await _suggestionsRepository.UpdateSuggestion(request.suggestion.Id, suggestion);
         }
     }
 }
