@@ -4,7 +4,6 @@ using Application.Common.Validators;
 using Application.Suggestions.Commands;
 using DataAccess.DbContexts;
 using DataAccess.Repositories;
-using Domain.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +20,7 @@ namespace MinimalApi.Extensions
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             var cs = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<SuggestionContext>(options => options.UseSqlServer(cs));
+            builder.Services.AddDbContext<SuggestionContext>(options => options.UseSqlServer(cs, options => options.EnableRetryOnFailure()));
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
