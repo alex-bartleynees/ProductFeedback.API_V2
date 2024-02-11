@@ -78,10 +78,17 @@ namespace MinimalApi.Extensions
             app.RegisterEndpointDefinitions();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-            using (var scope = app.Services.CreateScope())
+            try
             {
-                var db = scope.ServiceProvider.GetRequiredService<SuggestionContext>();
-                db.Database.Migrate();
+                using (var scope = app.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<SuggestionContext>();
+                    db.Database.Migrate();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Failed to migrate database");
             }
         }
 
