@@ -1,11 +1,12 @@
-version: "3.9"
 services:
   dotnet-web-api:
     build:
       context: .
     container_name: minimalapiapp
     ports:
-      - 5185:80
+      - 5185:5185
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: 5185
+networks:
+  simple-network:
+    driver: bridge

@@ -398,3 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 
 .ds_store
+
+docker-compose.override.yml
