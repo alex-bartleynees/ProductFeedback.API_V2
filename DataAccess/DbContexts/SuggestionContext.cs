@@ -23,7 +23,7 @@ namespace DataAccess.DbContexts
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sql server with connection string from app settings
-            options.UseSqlServer(Configuration.GetConnectionString("SuggestionDBConnectionString"));
+            options.UseNpgsql(Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException("No connection string provided"));
         }
 
 
