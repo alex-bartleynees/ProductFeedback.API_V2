@@ -35,7 +35,7 @@ namespace MinimalApi.Extensions
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("http://localhost:4200", "https://product-feedback-app-v2.netlify.app/")
+                                      policy.WithOrigins("http://localhost:4200", "https://product-feedback-app-v2.netlify.app")
                                           .AllowAnyHeader()
                                          .AllowAnyMethod();
                                   });
