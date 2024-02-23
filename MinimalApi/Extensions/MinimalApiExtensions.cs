@@ -20,7 +20,7 @@ namespace MinimalApi.Extensions
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString");
-            builder.Services.AddDbContext<SuggestionContext>(options => options.UseNpgsql(cs, options => options.EnableRetryOnFailure()));
+            builder.Services.AddDbContext<SuggestionContext>(options => options.UseNpgsql());
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
@@ -86,10 +86,9 @@ namespace MinimalApi.Extensions
                     db.Database.Migrate();
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine("Failed to migrate database");
-                throw new Exception(ex.Message);
+                throw new Exception("Failed to migrate database");
             }
         }
 
