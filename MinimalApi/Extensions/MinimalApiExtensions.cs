@@ -20,7 +20,7 @@ namespace MinimalApi.Extensions
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString");
-            builder.Services.AddDbContext<SuggestionContext>(options => options.UseNpgsql());
+            builder.Services.AddDbContext<SuggestionContext>(options => options.UseNpgsql(cs, options => options.EnableRetryOnFailure()));
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
