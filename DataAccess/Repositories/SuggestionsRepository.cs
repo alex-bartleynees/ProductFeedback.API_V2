@@ -16,14 +16,11 @@ namespace DataAccess.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Suggestion>> GetSuggestions()
+        public async Task<IEnumerable<SuggestionDto>> GetSuggestions()
         {
             return await _context.Suggestions
-                .Include(c => c.Comments)
-                .ThenInclude(c => c.User)
-                .Include(x => x.Comments)
-                .ThenInclude(r => r.Replies)
-                .ThenInclude(r => r.User)
+                .AsNoTracking()
+                .Select(s => new SuggestionDto(s))
                 .ToListAsync();
 
         }
@@ -31,6 +28,7 @@ namespace DataAccess.Repositories
         public async Task<Result<Suggestion>> GetSuggestionById(int suggestionId)
         {
             var result = await _context.Suggestions
+                .AsNoTracking()
                 .Where(s => s.Id == suggestionId)
                 .Include(c => c.Comments)
                 .ThenInclude(c => c.User)

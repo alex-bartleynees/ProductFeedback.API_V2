@@ -24,7 +24,7 @@ namespace MinimalApi.EndpointDefinitions
             suggestions.MapDelete("/{suggestionId}", DeleteSuggestion);
         }
 
-        private async Task<Ok<IEnumerable<Suggestion>>> GetSuggestions(IMediator mediator)
+        private async Task<Ok<IEnumerable<SuggestionDto>>> GetSuggestions(IMediator mediator)
         {
             var result = await mediator.Send(new GetSuggestions());
             return TypedResults.Ok(result);

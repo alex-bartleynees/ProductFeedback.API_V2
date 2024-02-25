@@ -1,11 +1,12 @@
 using Application.Common;
+using Application.Common.Models;
 using Domain.Entities;
 
 namespace Application.Abstractions
 {
     public interface ISuggestionsRepository
     {
-        Task<IEnumerable<Suggestion>> GetSuggestions();
+        Task<IEnumerable<SuggestionDto>> GetSuggestions();
 
         Task<Result<Suggestion>> GetSuggestionById(int suggestionId);
 
