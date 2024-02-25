@@ -20,7 +20,10 @@ namespace DataAccess.Repositories
         {
             return await _context.Suggestions
                 .AsNoTracking()
-                .Select(s => new SuggestionDto(s))
+                .Select(s => new SuggestionDto(
+                    s,
+                    s.Comments.Count()
+                ))
                 .ToListAsync();
 
         }

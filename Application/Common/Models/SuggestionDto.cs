@@ -6,7 +6,7 @@ namespace Application.Common.Models
 {
     public record SuggestionDto
     {
-        public SuggestionDto(Suggestion s)
+        public SuggestionDto(Suggestion s, int commentCount)
         {
             Id = s.Id;
             Title = s.Title;
@@ -14,15 +14,18 @@ namespace Application.Common.Models
             Category = s.Category;
             Status = s.Status;
             Description = s.Description;
+            CommentCount = commentCount;
         }
-        public int Id { get; set; }
+        public int Id { get; init; }
         public string Title { get; init; }
-        public int Upvotes { get; set; }
-        public string Category { get; set; }
+        public int Upvotes { get; init; }
+        public string Category { get; init; }
 
-        public string Status { get; set; }
+        public string Status { get; init; }
 
-        public string Description { get; set; }
+        public string Description { get; init; }
+
+        public int CommentCount { get; init; }
 
     }
 }
