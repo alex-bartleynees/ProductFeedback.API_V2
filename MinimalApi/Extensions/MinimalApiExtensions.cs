@@ -20,7 +20,8 @@ namespace MinimalApi.Extensions
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException(nameof(builder), "No connection string provided");
-            builder.Services.AddDbContext<SuggestionContext>(options => options.UseMySQL(cs, options => options.EnableRetryOnFailure()));
+            var serverVersion = ServerVersion.AutoDetect(cs);
+            builder.Services.AddDbContext<SuggestionContext>(options => options.UseMySql(cs, serverVersion));
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
