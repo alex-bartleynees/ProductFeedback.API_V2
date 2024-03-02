@@ -19,8 +19,8 @@ namespace MinimalApi.Extensions
         public static void RegisterServices(this WebApplicationBuilder builder)
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-            var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString");
-            builder.Services.AddDbContext<SuggestionContext>(options => options.UseNpgsql(cs, options => options.EnableRetryOnFailure()));
+            var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException(nameof(builder), "No connection string provided");
+            builder.Services.AddDbContext<SuggestionContext>(options => options.UseMySQL(cs, options => options.EnableRetryOnFailure()));
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
@@ -86,9 +86,9 @@ namespace MinimalApi.Extensions
                     db.Database.Migrate();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception("Failed to migrate database");
+                throw new Exception("Failed to migrate database", ex);
             }
         }
 

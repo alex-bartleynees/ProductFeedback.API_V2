@@ -23,7 +23,7 @@ namespace DataAccess.DbContexts
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sql server with connection string from app settings
-            options.UseNpgsql(Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException("No connection string provided"));
+            options.UseMySQL(Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException("No connection string provided"));
         }
 
 
@@ -40,7 +40,57 @@ namespace DataAccess.DbContexts
                        {
                            Id = 2,
                            Upvotes = 122,
-                       }
+                       },
+                       new Suggestion("Q&A within the challenge hubs", "feature", "suggestion", "Challenge-specific Q&A would make for easy reference.")
+                       {
+                           Id = 3,
+                           Upvotes = 65,
+                       },
+                        new Suggestion("Add image/video upload to feedback", "enhancement", "suggestion", "Images and screencasts can enhance comments on solutions.")
+                        {
+                            Id = 4,
+                            Upvotes = 51,
+                        },
+                        new Suggestion("Ability to follow others", "feature", "suggestion", "Stay updated on comments and solutions other people post.")
+                        {
+                            Id = 5,
+                            Upvotes = 42,
+                        },
+                        new Suggestion("Preview images not loading", "bug", "suggestion", "Challenge preview images are missing when you apply a filter.")
+                        {
+                            Id = 6,
+                            Upvotes = 3,
+                        },
+                        new Suggestion("More comprehensive reports", "feature", "planned", "It would be great to see a more detailed breakdown of solutions.")
+                        {
+                            Id = 7,
+                            Upvotes = 123,
+                        },
+                        new Suggestion("Learning paths", "feature", "planned", "Sequenced projects for different goals to help people improve.")
+                        {
+                            Id = 8,
+                            Upvotes = 28,
+                        },
+                        new Suggestion("One-click portfolio generation", "feature", "in-progress", "Add ability to create professional looking portfolio from profile.")
+                        {
+                            Id = 9,
+                            Upvotes = 62,
+                        },
+                        new Suggestion("Bookmark challenges", "feature", "in-progress", "Be able to bookmark challenges to take later on.")
+                        {
+                            Id = 10,
+                            Upvotes = 31,
+                        },
+                        new Suggestion("Animated solution screenshots", "bug", "in-progress", "Screenshots of solutions with animations don’t display correctly.")
+                        {
+                            Id = 11,
+                            Upvotes = 9,
+                        },
+                        new Suggestion("Add micro-interactions", "enhancement", "live", "Small animations at specific points can add delight.")
+                        {
+                            Id = 12,
+                            Upvotes = 71,
+                        }
                     );
 
             modelBuilder.Entity<SuggestionComment>()
@@ -68,6 +118,72 @@ namespace DataAccess.DbContexts
                             Id = 4,
                             SuggestionId = 2,
                             UserId = 5,
+                        },
+                        new SuggestionComment("Much easier to get answers from devs who can relate, since they've either finished the challenge themselves or are in the middle of it.")
+                        {
+                            Id = 5,
+                            SuggestionId = 3,
+                            UserId = 8,
+                        },
+                        new SuggestionComment("Right now, there is no ability to add images while giving feedback which isn't ideal because I have to use another app to show what I mean")
+                        {
+                            Id = 6,
+                            SuggestionId = 4,
+                            UserId = 9,
+                        },
+                        new SuggestionComment("Yes I'd like to see this as well. Sometimes I want to add a short video or gif to explain the site's behavior..")
+                        {
+                            Id = 7,
+                            SuggestionId = 4,
+                            UserId = 10,
+                        },
+                        new SuggestionComment("I also want to be notified when devs I follow submit projects on FEM. Is in-app notification also in the pipeline?")
+                        {
+                            Id = 8,
+                            SuggestionId = 5,
+                            UserId = 11,
+                        },
+                        new SuggestionComment("I've been saving the profile URLs of a few people and I check what they’ve been doing from time to time. Being able to follow them solves that")
+                        {
+                            Id = 9,
+                            SuggestionId = 5,
+                            UserId = 12,
+                        },
+                        new SuggestionComment("This would be awesome! It would be so helpful to see an overview of my code in a way that makes it easy to spot where things could be improved.")
+                        {
+                            Id = 10,
+                            SuggestionId = 7,
+                            UserId = 11,
+                        },
+                        new SuggestionComment("Yeah, this would be really good. I'd love to see deeper insights into my code!")
+                        {
+                            Id = 11,
+                            SuggestionId = 7,
+                            UserId = 12,
+                        },
+                        new SuggestionComment("Having a path through the challenges that I could follow would be brilliant! Sometimes I'm not sure which challenge would be the best next step to take. So this would help me navigate through them!")
+                        {
+                            Id = 12,
+                            SuggestionId = 8,
+                            UserId = 8,
+                        },
+                        new SuggestionComment("I haven't built a portfolio site yet, so this would be really helpful. Might it also be possible to choose layout and colour themes?!")
+                        {
+                            Id = 13,
+                            SuggestionId = 9,
+                            UserId = 7,
+                        },
+                        new SuggestionComment("This would be great! At the moment, I'm just starting challenges in order to save them. But this means the My Challenges section is overflowing with projects and is hard to manage. Being able to bookmark challenges would be really helpful.")
+                        {
+                            Id = 14,
+                            SuggestionId = 10,
+                            UserId = 1,
+                        },
+                        new SuggestionComment("I'd love to see this! It always makes me so happy to see little details like these on websites.")
+                        {
+                            Id = 15,
+                            SuggestionId = 12,
+                            UserId = 11,
                         }
                     );
 
@@ -84,6 +200,18 @@ namespace DataAccess.DbContexts
                         Id = 2,
                         UserId = 7,
                         SuggestionCommentId = 4
+                    },
+                    new SuggestionCommentReply("Bumping this. It would be good to have a tab with a feed of people I follow so it's easy to see what challenges they’ve done lately. I learn a lot by reading good developers' code.", "arlen_the_marlin")
+                    {
+                        Id = 3,
+                        UserId = 3,
+                        SuggestionCommentId = 8
+                    },
+                    new SuggestionCommentReply("Me too! I'd also love to see celebrations at specific points as well. It would help people take a moment to celebrate their achievements!", "arlen_the_marlin")
+                    {
+                        Id = 4,
+                        UserId = 1,
+                        SuggestionCommentId = 15
                     }
                     );
 
@@ -122,7 +250,27 @@ namespace DataAccess.DbContexts
                     {
                         Id = 7,
 
-                    }
+                    },
+                    new User("George Partridge", "soccerviewer8", "./assets/user-images/image-george.jpg")
+                    {
+                        Id = 8,
+                    },
+                    new User("Javier Pollard", "warlikeduke", "./assets/user-images/image-javier.jpg")
+                    {
+                        Id = 9,
+                    },
+                    new User("Roxanne Travis", "peppersprime32", "./assets/user-images/image-roxanne.jpg")
+                    {
+                        Id = 10,
+                    },
+                    new User("Victoria Mejia", "arlen_the_marlin", "./assets/user-images/image-victoria.jpg")
+                    {
+                        Id = 11,
+                    },
+                      new User("Jackson Barker", "countryspirit", "./assets/user-images/image-jackson.jpg")
+                      {
+                          Id = 12,
+                      }
                     );
         }
     }
