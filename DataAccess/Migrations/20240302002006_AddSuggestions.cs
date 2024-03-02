@@ -68,6 +68,18 @@ namespace DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SuggestionsComment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SuggestionsComment_Suggestions_SuggestionId",
+                        column: x => x.SuggestionId,
+                        principalTable: "Suggestions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SuggestionsComment_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -87,6 +99,17 @@ namespace DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SuggestionsCommentReply", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SuggestionsCommentReply_SuggestionsComment_SuggestionComment~",
+                        column: x => x.SuggestionCommentId,
+                        principalTable: "SuggestionsComment",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SuggestionsCommentReply_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
