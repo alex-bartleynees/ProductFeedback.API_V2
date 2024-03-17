@@ -33,11 +33,27 @@ namespace DataAccess.Repositories
             var result = await _context.Suggestions
                 .AsNoTracking()
                 .Where(s => s.Id == suggestionId)
-                .Include(c => c.Comments)
-                .ThenInclude(c => c.User)
-                .Include(x => x.Comments)
-                .ThenInclude(r => r.Replies)
-                .ThenInclude(r => r.User)
+                .Select(s => new Suggestion()
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Upvotes = s.Upvotes,
+                    Category = s.Category,
+                    Status = s.Status,
+                    Description = s.Description,
+                    Comments = s.Comments.Select(c => new SuggestionComment(c.Content)
+                    {
+                        Id = c.Id,
+                        User = c.User,
+                        SuggestionId = c.SuggestionId,
+                        Replies = (ICollection<SuggestionCommentReply>)c.Replies.Select(r => new SuggestionCommentReply(r.Content, r.ReplyingTo)
+                        {
+                            Id = r.Id,
+                            User = r.User,
+                            SuggestionCommentId = r.SuggestionCommentId,
+                        })
+                    })
+                })
                 .FirstOrDefaultAsync();
 
             if (result == null)
