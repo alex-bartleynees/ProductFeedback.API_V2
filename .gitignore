@@ -402,3 +402,4 @@ FodyWeavers.xsd
 docker-compose.override.yml
 
 .mono
+.env
