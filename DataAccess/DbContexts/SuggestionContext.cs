@@ -23,9 +23,7 @@ namespace DataAccess.DbContexts
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sql server with connection string from app settings
-            var cs = Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException("No connection string provided");
-            var serverVersion = ServerVersion.AutoDetect(cs);
-            options.UseMySql(cs, serverVersion);
+            options.UseSqlServer(Configuration.GetConnectionString("SuggestionDBConnectionString"));
         }
 
 
