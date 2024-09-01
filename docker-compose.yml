@@ -60,5 +60,15 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
 
+  grafana:
+    image: grafana/grafana:9.4.3
+    volumes:
+      - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+    ports:
+      - "3000:3000"
+ 
 volumes:
   mssql-data:
