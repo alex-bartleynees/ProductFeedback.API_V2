@@ -1,4 +1,3 @@
-using System.Reflection;
 using Application.Abstractions;
 using Application.Common.Models;
 using Application.Common.Validators;
@@ -8,12 +7,11 @@ using DataAccess.Repositories;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.OpenApi.Models;
 using MinimalApi.Abstractions;
+
 using MinimalApi.Middleware;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
+
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace MinimalApi.Extensions
@@ -62,31 +60,6 @@ namespace MinimalApi.Extensions
                     Description = "Suggestions API documentation",
                 });
             });
-
-            builder.Services.AddOpenTelemetry()
-                .ConfigureResource(resource =>
-                {
-                    resource
-                        .AddService("ProductFeedbackAPI")
-                        .AddAttributes(new[]
-                        {
-                            new KeyValuePair<string, object>("service.version", Assembly.GetExecutingAssembly().GetName().Version!.ToString())
-                        });
-                })
-                .WithTracing(tracing =>
-               {
-                   tracing
-                       .AddAspNetCoreInstrumentation()
-                       .AddSqlClientInstrumentation(options =>
-                       {
-                           options.EnableConnectionLevelAttributes = true;
-                           options.RecordException = true;
-                           options.SetDbStatementForText = true;
-                       })
-
-                       .AddHttpClientInstrumentation()
-                       .AddOtlpExporter(options => options.Endpoint = new Uri("http://jaeger:4317"));
-               });
         }
 
         public static void RegisterAppConfig(this WebApplication app)
@@ -102,6 +75,8 @@ namespace MinimalApi.Extensions
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
             app.UseHttpsRedirection();
 

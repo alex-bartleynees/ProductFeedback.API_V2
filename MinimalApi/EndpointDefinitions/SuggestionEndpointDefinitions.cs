@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Application.Common;
 using Application.Common.Models;
 using Application.Suggestions.Commands;
@@ -6,6 +7,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MinimalApi.Abstractions;
+using MinimalApi.Diagnostics;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace MinimalApi.EndpointDefinitions
@@ -34,6 +36,7 @@ namespace MinimalApi.EndpointDefinitions
         {
             var command = new CreateSuggestion(suggestion);
             var result = await mediator.Send(command);
+            ApplicationsDiagnostics.SuggestionsCreatedCounter.Add(1);
             return Results.CreatedAtRoute("GetSuggestionById", new { result.Id }, result);
         }
 

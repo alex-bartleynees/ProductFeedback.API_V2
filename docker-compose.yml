@@ -33,6 +33,7 @@ services:
     environment:
       ASPNETCORE_HTTP_PORTS: 5185
       ConnectionStrings__SuggestionDBConnectionString: ${SQL_CONNECTION_STRING}
+      ConnectionStrings__JaegerConnectionString: "http://jaeger:4317"
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -49,6 +50,15 @@ services:
       - "16686:16686"
       - "4317:4317"
       - "4318:4318"
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
 
 volumes:
   mssql-data:
