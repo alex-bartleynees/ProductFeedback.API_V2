@@ -76,8 +76,6 @@ namespace MinimalApi.Extensions
                 app.UseSwaggerUI();
             }
 
-            app.UseOpenTelemetryPrometheusScrapingEndpoint();
-
             app.UseHttpsRedirection();
 
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";

@@ -33,7 +33,7 @@ services:
     environment:
       ASPNETCORE_HTTP_PORTS: 5185
       ConnectionStrings__SuggestionDBConnectionString: ${SQL_CONNECTION_STRING}
-      ConnectionStrings__JaegerConnectionString: "http://jaeger:4317"
+      ConnectionStrings__OTLP_Endpoint: "http://otel-collector:4317"
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -44,12 +44,27 @@ services:
           path: ./
           target: /usr/app/
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.103.0
+    volumes:
+      - ./otel-config.yml:/etc/otel/config.yml
+      - ./log:/log/otel
+    command: --config /etc/otel/config.yml
+    environment:
+      JAEGER_ENDPOINT: "jaeger:4317"
+    ports:
+      - "8889:8889" # Prometheus metrics exporter (scrape endpoint)
+      - "13133:13133" # health_check extension
+      - "55679:55679" # ZPages extension
+      - "4317:4317" # OTLP Receiver
+    depends_on:
+      - jaeger
+      - prometheus
+
   jaeger:
     image: jaegertracing/all-in-one
     ports:
       - "16686:16686"
-      - "4317:4317"
-      - "4318:4318"
 
   prometheus:
     image: prom/prometheus:v2.53.0
@@ -69,6 +84,6 @@ services:
       GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
     ports:
       - "3000:3000"
- 
+
 volumes:
   mssql-data:

@@ -11,13 +11,13 @@ namespace MinimalApi.Diagnostics
     {
         public static void ConfigureOpenTelemetry(this WebApplicationBuilder builder)
         {
-            var cs = builder.Configuration.GetConnectionString("JaegerConnectionString") ?? throw new ArgumentNullException(nameof(builder), "No Jaeger connection string provided");
+            var cs = builder.Configuration.GetConnectionString("OTLP_Endpoint") ?? throw new ArgumentNullException(nameof(builder), "No OTLP connection string provided");
 
             builder.Services.AddOpenTelemetry()
                 .ConfigureResource(resource =>
                 {
                     resource
-                        .AddService("ProductFeedbackAPI")
+                        .AddService("ProductFeedback.API")
                         .AddAttributes(new[]
                         {
                             new KeyValuePair<string, object>("service.version", Assembly.GetExecutingAssembly().GetName().Version!.ToString())
@@ -44,7 +44,7 @@ namespace MinimalApi.Diagnostics
                     .AddMeter("Microsoft.AspNetCore.Hosting")
                     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
                     .AddMeter(ApplicationsDiagnostics.Meter.Name)
-                    .AddPrometheusExporter()
+                    .AddOtlpExporter(options => options.Endpoint = new Uri(cs))
                );
         }
     }
