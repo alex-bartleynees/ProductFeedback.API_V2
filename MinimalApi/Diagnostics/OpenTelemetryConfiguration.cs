@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -41,10 +42,26 @@ namespace MinimalApi.Diagnostics
                     metrics
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddProcessInstrumentation()
                     .AddMeter("Microsoft.AspNetCore.Hosting")
                     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+                    .AddMeter("Microsoft.AspNetCore.Http.Connections")
+                    .AddMeter("Microsoft.AspNetCore.Routing")
+                    .AddMeter("Microsoft.AspNetCore.Diagnostics")
+                    .AddMeter("Microsoft.AspNetCore.RateLimiting")
                     .AddMeter(ApplicationsDiagnostics.Meter.Name)
                     .AddOtlpExporter(options => options.Endpoint = new Uri(cs))
+               )
+               .WithLogging(logging =>
+                    {
+                        logging
+                            .AddOtlpExporter(options => options.Endpoint = new Uri(cs));
+                    },
+                    options =>
+                    {
+                        options.IncludeFormattedMessage = true;
+                    }
                );
         }
     }
