@@ -19,10 +19,10 @@ namespace MinimalApi.Diagnostics
                 {
                     resource
                         .AddService("ProductFeedback.API")
-                        .AddAttributes(new[]
-                        {
+                        .AddAttributes(
+                        [
                             new KeyValuePair<string, object>("service.version", Assembly.GetExecutingAssembly().GetName().Version!.ToString())
-                        });
+                        ]);
                 })
                 .WithTracing(tracing =>
                {
@@ -34,7 +34,7 @@ namespace MinimalApi.Diagnostics
                            options.RecordException = true;
                            options.SetDbStatementForText = true;
                        })
-
+                        .AddSource(ApplicationsDiagnostics.ActivitySourceName)
                        .AddHttpClientInstrumentation()
                        .AddOtlpExporter(options => options.Endpoint = new Uri(cs));
                })
