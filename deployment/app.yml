@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-product-feedback-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 5185
+  selector:
+    env: product-feedback-api
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: product-feedback-api
+  labels:
+    env: product-feedback-api
+spec:
+  containers:
+    - image: creativefree/product-feedback-api
+      name: product-feedback-api
+      ports:
+        - containerPort: 5185
+      imagePullPolicy: Always
