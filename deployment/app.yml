@@ -20,6 +20,11 @@ spec:
   containers:
     - image: creativefree/product-feedback-api
       name: product-feedback-api
+      envFrom:
+        - configMapRef:
+            name: product-feedback-api-config
+        - secretRef:
+            name: product-feedback-api-secrets
       ports:
         - containerPort: 5185
       imagePullPolicy: Always
