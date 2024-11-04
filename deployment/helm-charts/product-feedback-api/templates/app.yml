@@ -20,11 +20,16 @@ spec:
   containers:
     - image: creativefree/product-feedback-api
       name: product-feedback-api
+      env:
+        - name: ConnectionStrings__SuggestionDBConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: sqlconnectionstring
+              key: SQL_CONNECTION_STRING
       envFrom:
         - configMapRef:
             name: product-feedback-api-config
-        - secretRef:
-            name: product-feedback-api-secrets
+
       ports:
         - containerPort: 5185
       imagePullPolicy: Always

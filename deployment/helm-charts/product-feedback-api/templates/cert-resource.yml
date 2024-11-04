@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: product-feedback-cert
+  name: website-cert
   namespace: default # or your namespace
 spec:
   dnsNames:
-    - product-feedback-api.io # your domain
-  secretName: product-feedback-tls # this secret will be created
+    - alex-bartleynees.me # your domain
+  secretName: website-tls # this secret will be created
   issuerRef:
     name: selfsigned-issuer
     kind: ClusterIssuer
