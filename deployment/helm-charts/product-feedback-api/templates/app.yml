@@ -1,35 +1,48 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-product-feedback-api
+  name: {{ template "productfeedback.fullname" . }}-svc
 spec:
   type: ClusterIP
   ports:
     - port: 8080
       targetPort: 5185
   selector:
-    env: product-feedback-api
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: product-feedback-api
-  labels:
-    env: product-feedback-api
-spec:
-  containers:
-    - image: creativefree/product-feedback-api
-      name: product-feedback-api
-      env:
-        - name: ConnectionStrings__SuggestionDBConnectionString
-          valueFrom:
-            secretKeyRef:
-              name: sqlconnectionstring
-              key: SQL_CONNECTION_STRING
-      envFrom:
-        - configMapRef:
-            name: product-feedback-api-config
+    app: {{ template "productfeedback.name" . }}
 
-      ports:
-        - containerPort: 5185
-      imagePullPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "productfeedback.fullname" . }}
+  labels:
+    app: {{ template "productfeedback.name" . }}
+    chart: {{ template "productfeedback.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "productfeedback.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "productfeedback.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - image: creativefree/product-feedback-api
+          name: {{ .Chart.Name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ConnectionStrings__SuggestionDBConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: sqlconnectionstring
+                  key: SQL_CONNECTION_STRING
+          envFrom:
+            - configMapRef:
+                name: product-feedback-api-config
+          ports:
+            - containerPort: 5185
