@@ -1,0 +1,21 @@
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+  
+  domain: alex-bartleynees.me
+
+  namespace: default
+  
+  services:
+    - name: product-feedback
+      path: /product-feedback-app
+      pathType: Prefix
+      serviceName: nginx-service
+      servicePort: 80
+
+tls:
+  enabled: true
+  secretName: website-tls
