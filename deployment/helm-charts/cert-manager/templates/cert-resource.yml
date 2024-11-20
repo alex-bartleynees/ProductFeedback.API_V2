@@ -1,12 +1,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: website-cert
-  namespace: default # or your namespace
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.certificate.namespace }}
 spec:
   dnsNames:
-    - alex-bartleynees.me # your domain
-  secretName: website-tls # this secret will be created
+  {{- range .Values.certificate.dnsNames }}
+    - {{ .domain }}
+  {{- end}}
+  secretName: {{ .Values.certificate.secretName }}
   issuerRef:
-    name: selfsigned-issuer
-    kind: ClusterIssuer
+    name: {{ .Values.certificate.issuerRef.name }}
+    kind: {{ .Values.certificate.issuerRef.kind }}

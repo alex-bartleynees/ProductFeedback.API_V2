@@ -1,15 +1,25 @@
+{{- if eq .Values.issuers.type "selfsigned" }}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}
+{{- end }}
+
+{{- if eq .Values.issuers.type "letsencrypt" }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.issuers.letsencrypt.name }}
 spec:
   acme:
-    # Let's Encrypt production API
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: alexbartleynees@gmail.com  # Replace with your email
+    server: {{ .Values.issuers.letsencrypt.server }}
+    email: {{ .Values.issuers.letsencrypt.email }}
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
     solvers:
     - http01:
         ingress:
-          class: nginx  # Replace with your ingress class if different
+          class: {{ .Values.issuers.letsencrypt.ingressClass | default "nginx" }}
+{{- end}}
