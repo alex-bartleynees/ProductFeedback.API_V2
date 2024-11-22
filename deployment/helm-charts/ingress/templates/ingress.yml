@@ -7,6 +7,11 @@ metadata:
     {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ .Values.ingress.maxBodySize | default "8m" | quote }}
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: {{ .Values.ingress.timeout.connect | default "5" | quote }}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: {{ .Values.ingress.timeout.read | default "60" | quote }}
+    nginx.ingress.kubernetes.io/proxy-send-timeout: {{ .Values.ingress.timeout.send | default "60" | quote }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- if .Values.tls.enabled }}
@@ -27,4 +32,10 @@ spec:
                 name: {{ .serviceName }}
                 port:
                   number: {{ .servicePort }}
+            {{- if .annotations }}
+            annotations:
+              {{- range $key, $value := .annotations }}
+              {{ $key }}: {{ $value | quote }}
+              {{- end }}
+            {{- end }}
     {{- end }}
