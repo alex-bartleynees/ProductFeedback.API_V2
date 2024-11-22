@@ -1,15 +1,22 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "productfeedback.fullname" . }}-svc
+  name: {{ template "productfeedback.fullname" . }}-svc  
+  labels:                          
+    app: {{ template "productfeedback.name" . }}    
+    chart: {{ template "productfeedback.chart" . }}
+    release: {{ .Release.Name }}
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
-      targetPort: 5185
+    - port: 5185
+      targetPort: 5185   
+      name: http       
+      protocol: TCP 
   selector:
-    app: {{ template "productfeedback.name" . }}
-
+    app: {{ template "productfeedback.name" . }}    
+    chart: {{ template "productfeedback.chart" . }}
+    release: {{ .Release.Name }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -23,12 +30,14 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "productfeedback.name" . }}
+      app: {{ template "productfeedback.name" . }}    
+      chart: {{ template "productfeedback.chart" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "productfeedback.name" . }}
+        app: {{ template "productfeedback.name" . }}    
+        chart: {{ template "productfeedback.chart" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -46,10 +55,12 @@ spec:
                 name: product-feedback-api-config
           ports:
             - containerPort: 5185
+              name: http  
+              protocol: TCP 
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
               memory: "256Mi"
               cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
