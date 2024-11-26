@@ -28,6 +28,7 @@ services:
     build:
       context: .
     container_name: minimalapiapp
+    image: creativefree/product-feedback-api:latest
     ports:
       - 5185:5185
     environment:
