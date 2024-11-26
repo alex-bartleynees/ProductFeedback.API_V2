@@ -22,7 +22,7 @@ namespace MinimalApi.Extensions
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException(nameof(builder), "No connection string provided");
-            builder.Services.AddDbContext<SuggestionContext>(options => options.UseSqlServer(cs, options => options.MigrationsAssembly("MinimalApi")));
+            builder.Services.AddDbContext<SuggestionContext>(options => options.UseNpgsql(cs, options => options.EnableRetryOnFailure()));
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
@@ -31,7 +31,7 @@ namespace MinimalApi.Extensions
             {
                 configuration.OverrideDefaultResultFactoryWith<ValidationErrorFactory>();
             });
-            builder.Services.AddMediatR(typeof(CreateSuggestion));
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,

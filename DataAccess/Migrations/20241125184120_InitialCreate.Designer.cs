@@ -3,17 +3,17 @@ using System;
 using DataAccess.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SuggestionContext))]
-    [Migration("20240830233100_NewMigration")]
-    partial class NewMigration
+    [Migration("20241125184120_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,40 +21,40 @@ namespace DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Domain.Entities.Suggestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("Upvotes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -175,20 +175,20 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("SuggestionId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -310,24 +310,24 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("ReplyingTo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("SuggestionCommentId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -376,21 +376,21 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Image")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -400,84 +400,84 @@ namespace DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            Image = "./assets/user-images/image-suzanne.jpg",
+                            Image = "/assets/user-images/image-suzanne.jpg",
                             Name = "Suzanne Chang",
                             Username = "upbeat1811"
                         },
                         new
                         {
                             Id = 2,
-                            Image = "./assets/user-images/image-thomas.jpg",
+                            Image = "/assets/user-images/image-thomas.jpg",
                             Name = "Thomas Hood",
                             Username = "brawnybrave"
                         },
                         new
                         {
                             Id = 3,
-                            Image = "./assets/user-images/image-zena.jpg",
+                            Image = "/assets/user-images/image-zena.jpg",
                             Name = "Zena Kelley",
                             Username = "velvetround"
                         },
                         new
                         {
                             Id = 4,
-                            Image = "./assets/user-images/image-elijah.jpg",
+                            Image = "/assets/user-images/image-elijah.jpg",
                             Name = "Elijah Moss",
                             Username = "hexagon.bestagon"
                         },
                         new
                         {
                             Id = 5,
-                            Image = "./assets/user-images/image-james.jpg",
+                            Image = "/assets/user-images/image-james.jpg",
                             Name = "James Skinner",
                             Username = "hummingbird1"
                         },
                         new
                         {
                             Id = 6,
-                            Image = "./assets/user-images/image-anne.jpg",
+                            Image = "/assets/user-images/image-anne.jpg",
                             Name = "Anne Valentine",
                             Username = "annev1990"
                         },
                         new
                         {
                             Id = 7,
-                            Image = "./assets/user-images/image-ryan.jpg",
+                            Image = "/assets/user-images/image-ryan.jpg",
                             Name = "Ryan Welles",
                             Username = "voyager.344"
                         },
                         new
                         {
                             Id = 8,
-                            Image = "./assets/user-images/image-george.jpg",
+                            Image = "/assets/user-images/image-george.jpg",
                             Name = "George Partridge",
                             Username = "soccerviewer8"
                         },
                         new
                         {
                             Id = 9,
-                            Image = "./assets/user-images/image-javier.jpg",
+                            Image = "/assets/user-images/image-javier.jpg",
                             Name = "Javier Pollard",
                             Username = "warlikeduke"
                         },
                         new
                         {
                             Id = 10,
-                            Image = "./assets/user-images/image-roxanne.jpg",
+                            Image = "/assets/user-images/image-roxanne.jpg",
                             Name = "Roxanne Travis",
                             Username = "peppersprime32"
                         },
                         new
                         {
                             Id = 11,
-                            Image = "./assets/user-images/image-victoria.jpg",
+                            Image = "/assets/user-images/image-victoria.jpg",
                             Name = "Victoria Mejia",
                             Username = "arlen_the_marlin"
                         },
                         new
                         {
                             Id = 12,
-                            Image = "./assets/user-images/image-jackson.jpg",
+                            Image = "/assets/user-images/image-jackson.jpg",
                             Name = "Jackson Barker",
                             Username = "countryspirit"
                         });

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,13 +17,13 @@ namespace DataAccess.Migrations
                 name: "Suggestions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Upvotes = table.Column<int>(type: "int", nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Upvotes = table.Column<int>(type: "integer", nullable: false),
+                    Category = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,11 +34,11 @@ namespace DataAccess.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Image = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,11 +49,11 @@ namespace DataAccess.Migrations
                 name: "SuggestionsComment",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    SuggestionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Content = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    SuggestionId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,18 +76,18 @@ namespace DataAccess.Migrations
                 name: "SuggestionsCommentReply",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    ReplyingTo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    SuggestionCommentId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Content = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    ReplyingTo = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    SuggestionCommentId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SuggestionsCommentReply", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SuggestionsCommentReply_SuggestionsComment_SuggestionCommentId",
+                        name: "FK_SuggestionsCommentReply_SuggestionsComment_SuggestionCommen~",
                         column: x => x.SuggestionCommentId,
                         principalTable: "SuggestionsComment",
                         principalColumn: "Id");
@@ -122,18 +123,18 @@ namespace DataAccess.Migrations
                 columns: new[] { "Id", "Image", "Name", "Username" },
                 values: new object[,]
                 {
-                    { 1, "./assets/user-images/image-suzanne.jpg", "Suzanne Chang", "upbeat1811" },
-                    { 2, "./assets/user-images/image-thomas.jpg", "Thomas Hood", "brawnybrave" },
-                    { 3, "./assets/user-images/image-zena.jpg", "Zena Kelley", "velvetround" },
-                    { 4, "./assets/user-images/image-elijah.jpg", "Elijah Moss", "hexagon.bestagon" },
-                    { 5, "./assets/user-images/image-james.jpg", "James Skinner", "hummingbird1" },
-                    { 6, "./assets/user-images/image-anne.jpg", "Anne Valentine", "annev1990" },
-                    { 7, "./assets/user-images/image-ryan.jpg", "Ryan Welles", "voyager.344" },
-                    { 8, "./assets/user-images/image-george.jpg", "George Partridge", "soccerviewer8" },
-                    { 9, "./assets/user-images/image-javier.jpg", "Javier Pollard", "warlikeduke" },
-                    { 10, "./assets/user-images/image-roxanne.jpg", "Roxanne Travis", "peppersprime32" },
-                    { 11, "./assets/user-images/image-victoria.jpg", "Victoria Mejia", "arlen_the_marlin" },
-                    { 12, "./assets/user-images/image-jackson.jpg", "Jackson Barker", "countryspirit" }
+                    { 1, "/assets/user-images/image-suzanne.jpg", "Suzanne Chang", "upbeat1811" },
+                    { 2, "/assets/user-images/image-thomas.jpg", "Thomas Hood", "brawnybrave" },
+                    { 3, "/assets/user-images/image-zena.jpg", "Zena Kelley", "velvetround" },
+                    { 4, "/assets/user-images/image-elijah.jpg", "Elijah Moss", "hexagon.bestagon" },
+                    { 5, "/assets/user-images/image-james.jpg", "James Skinner", "hummingbird1" },
+                    { 6, "/assets/user-images/image-anne.jpg", "Anne Valentine", "annev1990" },
+                    { 7, "/assets/user-images/image-ryan.jpg", "Ryan Welles", "voyager.344" },
+                    { 8, "/assets/user-images/image-george.jpg", "George Partridge", "soccerviewer8" },
+                    { 9, "/assets/user-images/image-javier.jpg", "Javier Pollard", "warlikeduke" },
+                    { 10, "/assets/user-images/image-roxanne.jpg", "Roxanne Travis", "peppersprime32" },
+                    { 11, "/assets/user-images/image-victoria.jpg", "Victoria Mejia", "arlen_the_marlin" },
+                    { 12, "/assets/user-images/image-jackson.jpg", "Jackson Barker", "countryspirit" }
                 });
 
             migrationBuilder.InsertData(

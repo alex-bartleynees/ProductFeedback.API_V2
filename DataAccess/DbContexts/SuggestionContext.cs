@@ -23,7 +23,7 @@ namespace DataAccess.DbContexts
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sql server with connection string from app settings
-            options.UseSqlServer(Configuration.GetConnectionString("SuggestionDBConnectionString"));
+            options.UseNpgsql(Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException("No connection string provided"));
         }
 
 
@@ -217,57 +217,57 @@ namespace DataAccess.DbContexts
 
             modelBuilder.Entity<User>()
                 .HasData(
-                    new User("Suzanne Chang", "upbeat1811", "./assets/user-images/image-suzanne.jpg")
+                    new User("Suzanne Chang", "upbeat1811", "/assets/user-images/image-suzanne.jpg")
                     {
                         Id = 1,
 
                     },
-                    new User("Thomas Hood", "brawnybrave", "./assets/user-images/image-thomas.jpg")
+                    new User("Thomas Hood", "brawnybrave", "/assets/user-images/image-thomas.jpg")
                     {
                         Id = 2,
                     },
-                    new User("Zena Kelley", "velvetround", "./assets/user-images/image-zena.jpg")
+                    new User("Zena Kelley", "velvetround", "/assets/user-images/image-zena.jpg")
                     {
                         Id = 3,
 
                     },
-                    new User("Elijah Moss", "hexagon.bestagon", "./assets/user-images/image-elijah.jpg")
+                    new User("Elijah Moss", "hexagon.bestagon", "/assets/user-images/image-elijah.jpg")
                     {
                         Id = 4,
 
                     },
-                    new User("James Skinner", "hummingbird1", "./assets/user-images/image-james.jpg")
+                    new User("James Skinner", "hummingbird1", "/assets/user-images/image-james.jpg")
                     {
                         Id = 5,
 
                     },
-                    new User("Anne Valentine", "annev1990", "./assets/user-images/image-anne.jpg")
+                    new User("Anne Valentine", "annev1990", "/assets/user-images/image-anne.jpg")
                     {
                         Id = 6,
 
                     },
-                    new User("Ryan Welles", "voyager.344", "./assets/user-images/image-ryan.jpg")
+                    new User("Ryan Welles", "voyager.344", "/assets/user-images/image-ryan.jpg")
                     {
                         Id = 7,
 
                     },
-                    new User("George Partridge", "soccerviewer8", "./assets/user-images/image-george.jpg")
+                    new User("George Partridge", "soccerviewer8", "/assets/user-images/image-george.jpg")
                     {
                         Id = 8,
                     },
-                    new User("Javier Pollard", "warlikeduke", "./assets/user-images/image-javier.jpg")
+                    new User("Javier Pollard", "warlikeduke", "/assets/user-images/image-javier.jpg")
                     {
                         Id = 9,
                     },
-                    new User("Roxanne Travis", "peppersprime32", "./assets/user-images/image-roxanne.jpg")
+                    new User("Roxanne Travis", "peppersprime32", "/assets/user-images/image-roxanne.jpg")
                     {
                         Id = 10,
                     },
-                    new User("Victoria Mejia", "arlen_the_marlin", "./assets/user-images/image-victoria.jpg")
+                    new User("Victoria Mejia", "arlen_the_marlin", "/assets/user-images/image-victoria.jpg")
                     {
                         Id = 11,
                     },
-                      new User("Jackson Barker", "countryspirit", "./assets/user-images/image-jackson.jpg")
+                      new User("Jackson Barker", "countryspirit", "/assets/user-images/image-jackson.jpg")
                       {
                           Id = 12,
                       }
