@@ -3,6 +3,12 @@ certificate:
     dnsNames:
       - domain: alexbartleynees.com
     secretName: website-tls
+    reflection:
+      enabled: true
+      autoEnabled: true
+      namespaces:
+        - portfolio-site
+        - product-feedback
     issuerRef: 
       name: selfsigned-issuer
       kind: ClusterIssuer

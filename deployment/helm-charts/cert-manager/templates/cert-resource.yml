@@ -9,6 +9,12 @@ spec:
     - {{ .domain }}
   {{- end}}
   secretName: {{ .Values.certificate.secretName }}
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "{{ .Values.certificate.reflection.enabled | default "true" }}"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "{{ .Values.certificate.reflection.namespaces | join "," }}"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "{{ .Values.certificate.reflection.autoEnabled | default "true" }}"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "{{ .Values.certificate.reflection.namespaces | join "," }}"
   issuerRef:
     name: {{ .Values.certificate.issuerRef.name }}
     kind: {{ .Values.certificate.issuerRef.kind }}
