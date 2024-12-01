@@ -41,8 +41,7 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-        - image: creativefree/product-feedback-api
-          name: {{ .Chart.Name }}          
+        - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
