@@ -31,8 +31,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "productfeedback.name" . }}    
-      chart: {{ template "productfeedback.chart" . }}
-      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
