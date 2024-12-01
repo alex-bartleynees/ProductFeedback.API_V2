@@ -64,7 +64,7 @@ jobs:
       - name: Deploy with Helm
         run: |
           helm upgrade product-feedback-api ./deployment/helm-charts/product-feedback-api \
-            -- reuse-values \
+            --reuse-values \
             --set image.repository=creativefree/product-feedback-api \
             --set image.tag=${{ steps.tag.outputs.build_id }} \
             --namespace product-feedback
