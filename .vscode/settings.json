@@ -1,4 +1,14 @@
 {
     "appService.defaultWebAppToDeploy": "/subscriptions/c3302123-d61d-4e7b-b853-c9ecc28e1af7/resourceGroups/suggestions/providers/Microsoft.Web/sites/suggestions-api",
-    "appService.deploySubpath": "."
+    "appService.deploySubpath": ".",
+    "dotnetAcquisitionExtension.existingDotnetPath": [
+    {
+      "extensionId": "ms-dotnettools.csharp",
+      "path": "${env:DOTNET_ROOT}"
+    },    
+    {
+      "extensionId": "ms-dotnettools.csdevkit",
+      "path": "${env:DOTNET_ROOT}"
+    },
+  ]
 }
