@@ -403,3 +403,5 @@ docker-compose.override.yml
 
 .mono
 .env
+.direnv
+.idea
