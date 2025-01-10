@@ -66,7 +66,7 @@ ingress:
   
   services:
     - name: product-feedback-app
-      path: /assets(/|$)(.*)
+      path: /assets
       pathType: Prefix
       serviceName: product-feedback-app-svc
       servicePort: 4000
@@ -75,12 +75,12 @@ ingress:
         nginx.ingress.kubernetes.io/configuration-snippet: |
           add_header Cache-Control "public, max-age=31536000";
     - name: product-feedback
-      path: /product-feedback-app(/|$)(.*)
+      path: /product-feedback-app
       pathType: Prefix
       serviceName: product-feedback-app-svc
       servicePort: 4000
     - name: product-feedback-api
-      path: /product-feedback-api(/|$)(.*)
+      path: /product-feedback-api
       pathType: Prefix
       serviceName: product-feedback-api-svc
       servicePort: 5185
