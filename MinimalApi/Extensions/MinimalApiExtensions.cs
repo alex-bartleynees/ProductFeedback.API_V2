@@ -41,6 +41,7 @@ namespace MinimalApi.Extensions
                                                          "https://product-feedback-app-v2.netlify.app",
                                                          "https://product-feedback-app.calmisland-859a0406.australiaeast.azurecontainerapps.io",
                                                          "https://suggestions-app-ssr.azurewebsites.net",
+                                                         "https://product-feedback.alexbartleynees.com"
                                                          "https://product-feedback-ssr.netlify.app")
                                           .AllowAnyHeader()
                                          .AllowAnyMethod();
