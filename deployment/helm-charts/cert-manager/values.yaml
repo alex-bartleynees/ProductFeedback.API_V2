@@ -1,7 +1,8 @@
 certificate:
     namespace: default
     dnsNames:
-      - domain: alexbartleynees.com      
+      - domain: alexbartleynees.com
+      - domain: www.alexbartleynees.com
       - domain: product-feedback.alexbartleynees.com
     secretName: website-tls
     reflection:

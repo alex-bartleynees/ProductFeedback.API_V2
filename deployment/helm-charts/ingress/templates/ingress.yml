@@ -17,14 +17,17 @@ spec:
   {{- if .Values.tls.enabled }}
   tls:
     - hosts:
-        - {{ .Values.ingress.domain }}
+        {{- range .Values.ingress.hosts }}
+        - {{ .domain }}
+        {{- end }}
       secretName: {{ .Values.tls.secretName }}
   {{- end }}
   rules:
-    - host: {{ .Values.ingress.domain }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .domain }}
       http:
         paths:
-     {{- range .Values.ingress.services }}
+        {{- range $.Values.ingress.services }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
             backend:
@@ -38,4 +41,5 @@ spec:
               {{ $key }}: {{ $value | quote }}
               {{- end }}
             {{- end }}
+        {{- end }}
     {{- end }}
