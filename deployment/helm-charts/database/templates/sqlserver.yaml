@@ -10,7 +10,7 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-  type: LoadBalancer # or ClusterIP/NodePort depending on your needs
+  type: ClusterIP # or ClusterIP/NodePort depending on your needs
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -31,7 +31,7 @@ spec:
         fsGroup: 10001
       containers:
         - name: postgres-db # container name within the pod.
-          image: postgres:latest
+          image: postgres:17
           resources:
             requests:
               memory: "2Gi"
@@ -51,6 +51,22 @@ spec:
           volumeMounts:
             - name: pgdata
               mountPath: "/data/pgdata"
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
   volumeClaimTemplates:
     - metadata:
         name: pgdata
