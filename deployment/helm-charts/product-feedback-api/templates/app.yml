@@ -27,7 +27,6 @@ metadata:
     chart: {{ template "productfeedback.chart" . }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "productfeedback.name" . }}    
