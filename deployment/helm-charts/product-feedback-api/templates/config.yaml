@@ -5,5 +5,5 @@ metadata:
 data:
   ASPNETCORE_HTTP_PORTS: "5185"
   ASPNETCORE_URLS: "http://+:5185"
-  ConnectionStrings__OTLP_Endpoint: "http://otel-collector:4317"
+  ConnectionStrings__OTLP_Endpoint: "http://my-collector.monitoring.svc.cluster.local:4317"
   ConnectionStrings__SuggestionDBConnectionString: "${SQL_CONNECTION_STRING}"
