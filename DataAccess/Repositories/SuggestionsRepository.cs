@@ -20,10 +20,14 @@ namespace DataAccess.Repositories
         {
             return await _context.Suggestions
                 .AsNoTracking()
-                .Select(s => new SuggestionDto(
-                    s,
-                    s.Comments.Count()
-                ))
+                .GroupJoin(
+                    _context.SuggestionsComment,
+                    suggestion => suggestion.Id,
+                    comment => comment.SuggestionId,
+                    (suggestion, comments) => new SuggestionDto(
+                        suggestion,
+                        comments.Count()
+                    ))
                 .ToListAsync();
 
         }
