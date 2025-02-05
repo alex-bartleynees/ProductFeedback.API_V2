@@ -36,7 +36,11 @@ namespace MinimalApi.Diagnostics
                        })
                         .AddSource(ApplicationsDiagnostics.ActivitySourceName)
                        .AddHttpClientInstrumentation()
-                       .AddOtlpExporter(options => options.Endpoint = new Uri(cs));
+                       .AddOtlpExporter(options =>
+                           {
+                               options.Endpoint = new Uri(cs);
+                               options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+                           });
                })
                .WithMetrics(metrics =>
                     metrics
@@ -51,8 +55,12 @@ namespace MinimalApi.Diagnostics
                     .AddMeter("Microsoft.AspNetCore.Diagnostics")
                     .AddMeter("Microsoft.AspNetCore.RateLimiting")
                     .AddMeter(ApplicationsDiagnostics.Meter.Name)
-                    .AddOtlpExporter(options => options.Endpoint = new Uri(cs))
-               )
+                    .AddOtlpExporter(options => 
+                    {
+                        options.Endpoint = new Uri(cs);
+                        options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+                    })
+                )
                .WithLogging(logging =>
                     {
                         logging
