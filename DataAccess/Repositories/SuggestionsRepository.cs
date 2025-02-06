@@ -37,7 +37,7 @@ namespace DataAccess.Repositories
             var result = await _context.Suggestions
                 .AsNoTracking()
                 .Where(s => s.Id == suggestionId)
-                .Select(s => new Suggestion()
+                .Select(s => new Suggestion
                 {
                     Id = s.Id,
                     Title = s.Title,
@@ -50,22 +50,19 @@ namespace DataAccess.Repositories
                         Id = c.Id,
                         User = c.User,
                         SuggestionId = c.SuggestionId,
-                        Replies = (ICollection<SuggestionCommentReply>)c.Replies.Select(r => new SuggestionCommentReply(r.Content, r.ReplyingTo)
+                        Replies = c.Replies.Select(r => new SuggestionCommentReply(r.Content, r.ReplyingTo)
                         {
                             Id = r.Id,
                             User = r.User,
-                            SuggestionCommentId = r.SuggestionCommentId,
-                        })
-                    })
+                            SuggestionCommentId = r.SuggestionCommentId
+                        }).ToList()
+                    }).ToList()
                 })
                 .FirstOrDefaultAsync();
 
-            if (result == null)
-            {
-                return Result<Suggestion>.Failure(new Error(404, "Not Found", $"Suggestion with id: {suggestionId} was not found"));
-            }
-
-            return Result<Suggestion>.Success(result);
+            return result == null
+                ? Result<Suggestion>.Failure(new Error(404, "Not Found", $"Suggestion with id: {suggestionId} was not found"))
+                : Result<Suggestion>.Success(result);
         }
 
 
