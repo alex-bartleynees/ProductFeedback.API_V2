@@ -1,7 +1,7 @@
 using Application.Abstractions;
 using Application.Common.Models;
-using Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Suggestions.Queries
 {
@@ -10,15 +10,18 @@ namespace Application.Suggestions.Queries
     public class GetSuggestionsHandler : IRequestHandler<GetSuggestions, IEnumerable<SuggestionDto>>
     {
         private readonly ISuggestionsRepository _suggestionsRepository;
+        private readonly ILogger<GetSuggestionsHandler> _logger;
 
-        public GetSuggestionsHandler(ISuggestionsRepository suggestionsRepository)
+        public GetSuggestionsHandler(ISuggestionsRepository suggestionsRepository, ILogger<GetSuggestionsHandler> logger)
         {
             _suggestionsRepository = suggestionsRepository ??
                 throw new ArgumentNullException(nameof(suggestionsRepository));
+            _logger = logger;
         }
 
         public async Task<IEnumerable<SuggestionDto>> Handle(GetSuggestions request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Loading suggestions");
             return await _suggestionsRepository.GetSuggestions();
         }
     }
