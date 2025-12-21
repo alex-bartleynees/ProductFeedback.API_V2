@@ -7,4 +7,6 @@ data:
   ASPNETCORE_URLS: "http://+:5185"
   ConnectionStrings__OTLP_Endpoint: "http://my-collector-collector.monitoring.svc.cluster.local:4317"
   ConnectionStrings__SuggestionDBConnectionString: "${SQL_CONNECTION_STRING}"
-  ConnectionStrings__RedisConnection: "redis-master-external.redis:6379"
+  ConnectionStrings__RedisConnection: "redis-master.redis.svc.cluster.local:6379"
+  Redis__UseTls: "true"
+  Redis__Host: "redis-master.redis.svc.cluster.local"

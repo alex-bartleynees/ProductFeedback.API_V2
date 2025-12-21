@@ -40,6 +40,9 @@ namespace MinimalApi.Extensions
                 {
                     redisConfig.Ssl = true;
                     redisConfig.SslHost = builder.Configuration["Redis:Host"];
+
+                    // Allow self-signed certificates (common in Kubernetes internal Redis)
+                    redisConfig.CertificateValidation += (sender, cert, chain, errors) => true;
                 }
 
                 // Retry configuration
