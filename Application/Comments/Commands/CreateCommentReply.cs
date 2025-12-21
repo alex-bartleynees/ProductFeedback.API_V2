@@ -3,6 +3,7 @@ using Application.Common;
 using Application.Common.Models;
 using Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Comments.Commands
 {
@@ -10,10 +11,13 @@ namespace Application.Comments.Commands
     public class CreateCommentReplyHandler : IRequestHandler<CreateCommentReply, Result<ReplyToReturnDto>>
     {
         private readonly ISuggestionsRepository _suggestionsRepository;
-        public CreateCommentReplyHandler(ISuggestionsRepository suggestionsRepository)
+        private readonly HybridCache _cache;
+
+        public CreateCommentReplyHandler(ISuggestionsRepository suggestionsRepository, HybridCache cache)
         {
             _suggestionsRepository = suggestionsRepository ??
                 throw new ArgumentNullException(nameof(suggestionsRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
         public async Task<Result<ReplyToReturnDto>> Handle(CreateCommentReply request, CancellationToken cancellationToken)
         {
@@ -44,6 +48,9 @@ namespace Application.Comments.Commands
                 ReplyingTo = request.reply.ReplyingTo,
                 User = user,
             };
+
+            // Invalidate the cached suggestion since replies have changed
+            await _cache.RemoveAsync($"suggestion_{request.reply.SuggestionId}");
 
             return Result<ReplyToReturnDto>.Success(replyToReturn);
         }

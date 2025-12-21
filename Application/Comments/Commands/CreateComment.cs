@@ -4,6 +4,7 @@ using Application.Common.Models;
 using Ardalis.GuardClauses;
 using Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Comments.Commands
 {
@@ -12,10 +13,13 @@ namespace Application.Comments.Commands
     {
 
         private readonly ISuggestionsRepository _suggestionsRepository;
-        public CreateCommentHandler(ISuggestionsRepository suggestionsRepository)
+        private readonly HybridCache _cache;
+
+        public CreateCommentHandler(ISuggestionsRepository suggestionsRepository, HybridCache cache)
         {
             _suggestionsRepository = suggestionsRepository ??
                 throw new ArgumentNullException(nameof(suggestionsRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<Result<CommentToReturnDto>> Handle(CreateComment request, CancellationToken cancellationToken)
@@ -47,6 +51,9 @@ namespace Application.Comments.Commands
                 Content = commentEntity.Content,
                 User = user,
             };
+
+            // Invalidate the cached suggestion since comments have changed
+            await _cache.RemoveAsync($"suggestion_{commentEntity.SuggestionId}");
 
             return Result<CommentToReturnDto>.Success(commentToReturn);
         }
