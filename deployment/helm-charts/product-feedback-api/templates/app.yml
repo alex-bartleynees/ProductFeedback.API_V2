@@ -47,6 +47,11 @@ spec:
                 secretKeyRef:
                   name: sqlconnectionstring
                   key: SQL_CONNECTION_STRING
+            - name: Redis__Password 
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.secretName }}
+                  key: {{ .Values.redis.passwordKey }}
           envFrom:
             - configMapRef:
                 name: product-feedback-api-config

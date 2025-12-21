@@ -4,6 +4,7 @@ using Application.Common.Models;
 using Ardalis.GuardClauses;
 using Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Suggestions.Commands
 {
@@ -11,10 +12,13 @@ namespace Application.Suggestions.Commands
     public class UpdateSuggestionHandler : IRequestHandler<UpdateSuggestion, Result<Suggestion>>
     {
         private readonly ISuggestionsRepository _suggestionsRepository;
-        public UpdateSuggestionHandler(ISuggestionsRepository suggestionsRepository)
+        private readonly HybridCache _cache;
+
+        public UpdateSuggestionHandler(ISuggestionsRepository suggestionsRepository, HybridCache cache)
         {
             _suggestionsRepository = suggestionsRepository ??
                 throw new ArgumentNullException(nameof(suggestionsRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
         public async Task<Result<Suggestion>> Handle(UpdateSuggestion request, CancellationToken cancellationToken)
         {
@@ -29,7 +33,12 @@ namespace Application.Suggestions.Commands
                 Description = request.suggestion.Description
             };
 
-            return await _suggestionsRepository.UpdateSuggestion(request.suggestion.Id, suggestion);
+            var result = await _suggestionsRepository.UpdateSuggestion(request.suggestion.Id, suggestion);
+            if (result.IsSuccess && result.Value != null)
+            {
+                await _cache.SetAsync($"suggestion_{request.suggestion.Id}", result.Value, cancellationToken: cancellationToken);
+            }
+            return result;
         }
     }
 }

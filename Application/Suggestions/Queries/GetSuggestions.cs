@@ -21,7 +21,6 @@ namespace Application.Suggestions.Queries
 
         public async Task<IEnumerable<SuggestionDto>> Handle(GetSuggestions request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Loading suggestions");
             return await _suggestionsRepository.GetSuggestions();
         }
     }

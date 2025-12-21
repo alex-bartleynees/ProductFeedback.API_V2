@@ -1,28 +1,33 @@
 services:
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:latest
-    container_name: mssql2022
-    user: root
+  postgres:
+    image: postgres:17
+    container_name: postgres17
     environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=${SQL_PASSWORD}
+      POSTGRES_DB: suggestionsdb
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - 1433:1433
+      - "5432:5432"
     volumes:
-      - mssql-data:/var/opt/mssql
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD",
-          "/opt/mssql-tools18/bin/sqlcmd",
-          "-Usa",
-          "-P${SQL_PASSWORD}",
-          "-C",
-          "-Q",
-          "select 1",
-        ]
-      interval: 1s
-      retries: 20
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d suggestionsdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   dotnet-web-api:
     build:
@@ -33,10 +38,14 @@ services:
       - 5185:5185
     environment:
       ASPNETCORE_HTTP_PORTS: 5185
-      ConnectionStrings__SuggestionDBConnectionString: ${SQL_CONNECTION_STRING}
+      ConnectionStrings__SuggestionDBConnectionString: "Host=postgres;Port=5432;Database=suggestionsdb;Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      ConnectionStrings__RedisConnection: "redis:6379"
       ConnectionStrings__OTLP_Endpoint: "http://otel-collector:4317"
     depends_on:
-      sqlserver:
+      postgres:
+        condition: service_healthy
+        restart: true
+      redis:
         condition: service_healthy
         restart: true
     develop:
@@ -97,6 +106,7 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
 
 volumes:
-  mssql-data:
+  postgres-data:
+  redis-data:
   grafana-data:
   prometheus-data:

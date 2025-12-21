@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Application.Common;
 using Ardalis.GuardClauses;
 using MediatR;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Suggestions.Commands
 {
@@ -9,16 +10,24 @@ namespace Application.Suggestions.Commands
     public class DeleteSuggestionHandler : IRequestHandler<DeleteSuggestion, Result<int>>
     {
         private readonly ISuggestionsRepository _suggestionsRepository;
-        public DeleteSuggestionHandler(ISuggestionsRepository suggestionsRepository)
+        private readonly HybridCache _cache;
+
+        public DeleteSuggestionHandler(ISuggestionsRepository suggestionsRepository, HybridCache cache)
         {
             _suggestionsRepository = suggestionsRepository ??
                 throw new ArgumentNullException(nameof(suggestionsRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
-        public Task<Result<int>> Handle(DeleteSuggestion request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(DeleteSuggestion request, CancellationToken cancellationToken)
         {
             Guard.Against.Null(request);
 
-            return _suggestionsRepository.DeleteSuggestion(request.suggestionId);
+            var result = await _suggestionsRepository.DeleteSuggestion(request.suggestionId);
+            if (result.IsSuccess)
+            {
+                await _cache.RemoveAsync($"suggestion_{request.suggestionId}", cancellationToken);
+            }
+            return result;
         }
     }
 }

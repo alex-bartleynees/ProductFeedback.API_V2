@@ -13,6 +13,7 @@ using MinimalApi.Abstractions;
 using MinimalApi.Middleware;
 
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
+using StackExchange.Redis;
 
 namespace MinimalApi.Extensions
 {
@@ -23,6 +24,35 @@ namespace MinimalApi.Extensions
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             var cs = builder.Configuration.GetConnectionString("SuggestionDBConnectionString") ?? throw new ArgumentNullException(nameof(builder), "No connection string provided");
             builder.Services.AddDbContext<SuggestionContext>(options => options.UseNpgsql(cs, options => options.EnableRetryOnFailure()));
+
+            // Add StackExchangeRedisCache service for Redis
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                var redisConfig = ConfigurationOptions.Parse(
+                    builder.Configuration.GetConnectionString("RedisConnection") ?? "localhost:6379"
+                );
+
+                // Set password from configuration
+                redisConfig.Password = builder.Configuration["Redis:Password"];
+
+                // Optional: Configure TLS
+                if (builder.Configuration.GetValue<bool>("Redis:UseTls"))
+                {
+                    redisConfig.Ssl = true;
+                    redisConfig.SslHost = builder.Configuration["Redis:Host"];
+                }
+
+                // Retry configuration
+                redisConfig.AbortOnConnectFail = false;
+                redisConfig.ConnectRetry = 3;
+
+                options.ConfigurationOptions = redisConfig;
+                options.InstanceName = "SuggestionsCache:";
+            });
+
+            // Add HybridCache service
+            builder.Services.AddHybridCache();
+
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
