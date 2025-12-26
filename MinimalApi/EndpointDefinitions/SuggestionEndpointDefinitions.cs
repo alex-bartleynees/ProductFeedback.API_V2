@@ -19,11 +19,11 @@ namespace MinimalApi.EndpointDefinitions
             var suggestions = app.MapGroup("/api/suggestions").AddFluentValidationAutoValidation(); ;
 
             suggestions.MapGet("/", GetSuggestions);
-            suggestions.MapPost("/", CreateSuggestion);
+            suggestions.MapPost("/", CreateSuggestion).RequireAuthorization();
             suggestions.MapGet("/{id}", GetSuggestionById)
             .WithName("GetSuggestionById");
-            suggestions.MapPut("/{suggestionId}", UpdateSuggestion);
-            suggestions.MapDelete("/{suggestionId}", DeleteSuggestion);
+            suggestions.MapPut("/{suggestionId}", UpdateSuggestion).RequireAuthorization();
+            suggestions.MapDelete("/{suggestionId}", DeleteSuggestion).RequireAuthorization();
         }
 
         private async Task<Ok<IEnumerable<SuggestionDto>>> GetSuggestions(IMediator mediator)

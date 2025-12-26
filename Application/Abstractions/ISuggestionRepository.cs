@@ -16,7 +16,11 @@ namespace Application.Abstractions
 
         Task<IEnumerable<int>> AddReplyToComment(SuggestionCommentReply reply);
 
-        Task<Result<User>> GetUser(int userId);
+        Task<Result<User>> GetUser(Guid userId);
+
+        Task<Result<User>> GetUserByEmailAsync(string email);
+
+        Task<Result<User>> CreateUserAsync(User user);
 
         Task<Result<int>> DeleteSuggestion(int suggestionId);
 

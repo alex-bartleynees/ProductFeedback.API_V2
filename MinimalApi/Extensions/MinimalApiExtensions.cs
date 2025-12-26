@@ -2,8 +2,10 @@ using Application.Abstractions;
 using Application.Common.Models;
 using Application.Common.Validators;
 using Application.Suggestions.Commands;
+using DataAccess.Configuration;
 using DataAccess.DbContexts;
 using DataAccess.Repositories;
+using DataAccess.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +60,16 @@ namespace MinimalApi.Extensions
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ISuggestionsRepository, SuggestionsRepository>();
+
+            // Keycloak HTTP Client
+            builder.Services.Configure<KeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
+            builder.Services.AddHttpClient<IKeycloakService, KeycloakService>("KeycloakClient", client =>
+            {
+                var keycloakBaseUrl = builder.Configuration["Keycloak:BaseUrl"]
+                    ?? throw new ArgumentNullException("Keycloak:BaseUrl", "Keycloak BaseUrl must be configured");
+                client.BaseAddress = new Uri(keycloakBaseUrl);
+            });
+
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
             builder.Services.AddScoped<IValidator<SuggestionForUpdateDto>, SuggestionForUpdateDtoValidator>();
             builder.Services.AddFluentValidationAutoValidation(configuration =>
@@ -83,6 +95,18 @@ namespace MinimalApi.Extensions
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddProblemDetails();
+
+            builder.Services.AddAuthentication()
+                .AddJwtBearer(options =>
+                    {
+                        options.Authority = builder.Configuration["Jwt:Authority"]
+                            ?? throw new ArgumentNullException("Jwt:Authority", "JWT Authority must be configured");
+                        options.Audience = builder.Configuration["Jwt:Audience"]
+                            ?? throw new ArgumentNullException("Jwt:Audience", "JWT Audience must be configured");
+                    }
+                );
+
+            builder.Services.AddAuthorizationBuilder();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>

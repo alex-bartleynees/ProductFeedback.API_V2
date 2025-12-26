@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Users.Queries
 {
-    public record GetUserById(int userId) : IRequest<Result<User>>;
+    public record GetUserById(Guid userId) : IRequest<Result<User>>;
     public class GetUserByIdHandler : IRequestHandler<GetUserById, Result<User>>
     {
         private readonly ISuggestionsRepository _suggestionsRepository;

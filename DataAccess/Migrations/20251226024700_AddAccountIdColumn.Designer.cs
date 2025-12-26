@@ -3,6 +3,7 @@ using System;
 using DataAccess.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SuggestionContext))]
-    partial class SuggestionContextModelSnapshot : ModelSnapshot
+    [Migration("20251226024700_AddAccountIdColumn")]
+    partial class AddAccountIdColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,6 +179,9 @@ namespace DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -184,8 +190,8 @@ namespace DataAccess.Migrations
                     b.Property<int>("SuggestionId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -199,107 +205,122 @@ namespace DataAccess.Migrations
                         new
                         {
                             Id = 1,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Awesome idea! Trying to find framework-specific projects within the hubs can be tedious",
                             SuggestionId = 1,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000001")
+                            UserId = 1
                         },
                         new
                         {
                             Id = 2,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Please use fun, color-coded labels to easily identify them at a glance",
                             SuggestionId = 1,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000002")
+                            UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            Content = "Also, please allow styles to be applied based on system preferences. I would love to be able to browse Frontend Mentor in the evening after my device's dark mode turns on without the bright background it currently has.",
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Content = "Also, please allow styles to be applied based on system preferences. I would love to be able to browse Frontend Mentor in the evening after my device’s dark mode turns on without the bright background it currently has.",
                             SuggestionId = 2,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000004")
+                            UserId = 4
                         },
                         new
                         {
                             Id = 4,
-                            Content = "Second this! I do a lot of late night coding and reading. Adding a dark theme can be great for preventing eye strain and the headaches that result. It's also quite a trend with modern apps and  apparently saves battery life.",
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Content = "Second this! I do a lot of late night coding and reading. Adding a dark theme can be great for preventing eye strain and the headaches that result. It’s also quite a trend with modern apps and  apparently saves battery life.",
                             SuggestionId = 2,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000005")
+                            UserId = 5
                         },
                         new
                         {
                             Id = 5,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Much easier to get answers from devs who can relate, since they've either finished the challenge themselves or are in the middle of it.",
                             SuggestionId = 3,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000008")
+                            UserId = 8
                         },
                         new
                         {
                             Id = 6,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Right now, there is no ability to add images while giving feedback which isn't ideal because I have to use another app to show what I mean",
                             SuggestionId = 4,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000009")
+                            UserId = 9
                         },
                         new
                         {
                             Id = 7,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Yes I'd like to see this as well. Sometimes I want to add a short video or gif to explain the site's behavior..",
                             SuggestionId = 4,
-                            UserId = new Guid("00000000-0000-0000-0000-00000000000a")
+                            UserId = 10
                         },
                         new
                         {
                             Id = 8,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "I also want to be notified when devs I follow submit projects on FEM. Is in-app notification also in the pipeline?",
                             SuggestionId = 5,
-                            UserId = new Guid("00000000-0000-0000-0000-00000000000b")
+                            UserId = 11
                         },
                         new
                         {
                             Id = 9,
-                            Content = "I've been saving the profile URLs of a few people and I check what they've been doing from time to time. Being able to follow them solves that",
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Content = "I've been saving the profile URLs of a few people and I check what they’ve been doing from time to time. Being able to follow them solves that",
                             SuggestionId = 5,
-                            UserId = new Guid("00000000-0000-0000-0000-00000000000c")
+                            UserId = 12
                         },
                         new
                         {
                             Id = 10,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "This would be awesome! It would be so helpful to see an overview of my code in a way that makes it easy to spot where things could be improved.",
                             SuggestionId = 7,
-                            UserId = new Guid("00000000-0000-0000-0000-00000000000b")
+                            UserId = 11
                         },
                         new
                         {
                             Id = 11,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Yeah, this would be really good. I'd love to see deeper insights into my code!",
                             SuggestionId = 7,
-                            UserId = new Guid("00000000-0000-0000-0000-00000000000c")
+                            UserId = 12
                         },
                         new
                         {
                             Id = 12,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Having a path through the challenges that I could follow would be brilliant! Sometimes I'm not sure which challenge would be the best next step to take. So this would help me navigate through them!",
                             SuggestionId = 8,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000008")
+                            UserId = 8
                         },
                         new
                         {
                             Id = 13,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "I haven't built a portfolio site yet, so this would be really helpful. Might it also be possible to choose layout and colour themes?!",
                             SuggestionId = 9,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000007")
+                            UserId = 7
                         },
                         new
                         {
                             Id = 14,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "This would be great! At the moment, I'm just starting challenges in order to save them. But this means the My Challenges section is overflowing with projects and is hard to manage. Being able to bookmark challenges would be really helpful.",
                             SuggestionId = 10,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000001")
+                            UserId = 1
                         },
                         new
                         {
                             Id = 15,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "I'd love to see this! It always makes me so happy to see little details like these on websites.",
                             SuggestionId = 12,
-                            UserId = new Guid("00000000-0000-0000-0000-00000000000b")
+                            UserId = 11
                         });
                 });
 
@@ -310,6 +331,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -323,8 +347,8 @@ namespace DataAccess.Migrations
                     b.Property<int?>("SuggestionCommentId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -338,41 +362,50 @@ namespace DataAccess.Migrations
                         new
                         {
                             Id = 1,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "While waiting for dark mode, there are browser extensions that will also do the job. Search for 'dark theme' followed by your browser. There might be a need to turn off the extension for sites with naturally black backgrounds though.",
                             ReplyingTo = "hummingbird1",
                             SuggestionCommentId = 4,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000006")
+                            UserId = 6
                         },
                         new
                         {
                             Id = 2,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Good point! Using any kind of style extension is great and can be highly customizable, like the ability to change contrast and brightness. I'd prefer not to use one of such extensions, however, for security and privacy reasons.",
                             ReplyingTo = "annev1990",
                             SuggestionCommentId = 4,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000007")
+                            UserId = 7
                         },
                         new
                         {
                             Id = 3,
-                            Content = "Bumping this. It would be good to have a tab with a feed of people I follow so it's easy to see what challenges they've done lately. I learn a lot by reading good developers' code.",
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Content = "Bumping this. It would be good to have a tab with a feed of people I follow so it's easy to see what challenges they’ve done lately. I learn a lot by reading good developers' code.",
                             ReplyingTo = "arlen_the_marlin",
                             SuggestionCommentId = 8,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000003")
+                            UserId = 3
                         },
                         new
                         {
                             Id = 4,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Content = "Me too! I'd also love to see celebrations at specific points as well. It would help people take a moment to celebrate their achievements!",
                             ReplyingTo = "arlen_the_marlin",
                             SuggestionCommentId = 15,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000001")
+                            UserId = 1
                         });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
@@ -398,7 +431,8 @@ namespace DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                            Id = 1,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-suzanne.jpg",
                             Name = "Suzanne Chang",
@@ -406,7 +440,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Id = 2,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-thomas.jpg",
                             Name = "Thomas Hood",
@@ -414,7 +449,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000003"),
+                            Id = 3,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-zena.jpg",
                             Name = "Zena Kelley",
@@ -422,7 +458,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000004"),
+                            Id = 4,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-elijah.jpg",
                             Name = "Elijah Moss",
@@ -430,7 +467,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000005"),
+                            Id = 5,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-james.jpg",
                             Name = "James Skinner",
@@ -438,7 +476,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000006"),
+                            Id = 6,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-anne.jpg",
                             Name = "Anne Valentine",
@@ -446,7 +485,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000007"),
+                            Id = 7,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-ryan.jpg",
                             Name = "Ryan Welles",
@@ -454,7 +494,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000008"),
+                            Id = 8,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-george.jpg",
                             Name = "George Partridge",
@@ -462,7 +503,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-000000000009"),
+                            Id = 9,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-javier.jpg",
                             Name = "Javier Pollard",
@@ -470,7 +512,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-00000000000a"),
+                            Id = 10,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-roxanne.jpg",
                             Name = "Roxanne Travis",
@@ -478,7 +521,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-00000000000b"),
+                            Id = 11,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-victoria.jpg",
                             Name = "Victoria Mejia",
@@ -486,7 +530,8 @@ namespace DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("00000000-0000-0000-0000-00000000000c"),
+                            Id = 12,
+                            AccountId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "",
                             Image = "/assets/user-images/image-jackson.jpg",
                             Name = "Jackson Barker",

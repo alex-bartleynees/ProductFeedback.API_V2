@@ -11,10 +11,16 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d suggestionsdb"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d suggestionsdb",
+        ]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - shared-network
 
   redis:
     image: redis:7-alpine
@@ -28,6 +34,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    networks:
+      - shared-network
 
   dotnet-web-api:
     build:
@@ -41,6 +49,7 @@ services:
       ConnectionStrings__SuggestionDBConnectionString: "Host=postgres;Port=5432;Database=suggestionsdb;Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
       ConnectionStrings__RedisConnection: "redis:6379"
       ConnectionStrings__OTLP_Endpoint: "http://otel-collector:4317"
+      Keycloak__ClientSecret: ${ADMIN_CLIENT_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,6 +62,34 @@ services:
         - action: rebuild
           path: ./
           target: /usr/app/
+    networks:
+      - shared-network
+
+  product-feedback-bff:
+    container_name: product-feedback-bff
+    image: creativefree/product-feedback-bff:latest
+    ports:
+      - "5224:5224"
+    environment:
+      ASPNETCORE_URLS: "http://+:5224"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_RUNNING_IN_CONTAINER: "true"
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      ForwardedHeaders__KnownNetworks__0: "0.0.0.0/0"
+      Redis__Host: "redis:6379"
+      ReverseProxy__Clusters__product-feedback-api__Destinations__destination1__Address: "http://dotnet-web-api:5185/"
+      KEYCLOAK_SERVER_URL: "https://identity.alexbartleynees.com"
+      OpenIdConnectOptions__ClientSecret: ${CLIENT_SECRET}
+      OpenIdConnectOptions__RedirectUri: http://localhost:4200/signin-oidc
+    depends_on:
+      redis:
+        condition: service_healthy
+        restart: true
+      dotnet-web-api:
+        condition: service_started
+    networks:
+      - shared-network
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.103.0
@@ -71,11 +108,15 @@ services:
     depends_on:
       - jaeger
       - prometheus
+    networks:
+      - shared-network
 
   jaeger:
     image: jaegertracing/all-in-one
     ports:
       - "16686:16686"
+    networks:
+      - shared-network
 
   prometheus:
     image: prom/prometheus:v2.53.0
@@ -86,7 +127,9 @@ services:
       - "9090:9090"
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsmd.path=/prometheus"
+    networks:
+      - shared-network
 
   grafana:
     image: grafana/grafana:9.4.3
@@ -98,15 +141,23 @@ services:
       GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
     ports:
       - "3000:3000"
+    networks:
+      - shared-network
 
   loki:
     image: grafana/loki:2.7.1
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - shared-network
 
 volumes:
   postgres-data:
   redis-data:
   grafana-data:
   prometheus-data:
+
+networks:
+  shared-network:
+    external: true

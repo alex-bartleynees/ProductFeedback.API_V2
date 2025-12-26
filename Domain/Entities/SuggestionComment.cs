@@ -15,7 +15,7 @@ namespace Domain.Entities
         [ForeignKey("UserId")]
         public User? User { get; set; }
 
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ForeignKey("SuggestionId")]
         public int SuggestionId { get; set; }

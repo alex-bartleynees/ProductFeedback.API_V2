@@ -5,6 +5,6 @@ namespace Application.Common.Models
         public int SuggestionId { get; init; }
         public string Content { get; init; } = string.Empty;
 
-        public int UserId { get; init; }
+        public Guid UserId { get; init; }
     }
 }

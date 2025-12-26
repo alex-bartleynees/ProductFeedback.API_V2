@@ -109,7 +109,7 @@ namespace DataAccess.Repositories
             return Result<int>.Success();
         }
 
-        public async Task<Result<User>> GetUser(int userId)
+        public async Task<Result<User>> GetUser(Guid userId)
         {
             var user = await _context.Users
                 .Where(u => u.Id == userId).FirstOrDefaultAsync();
@@ -118,6 +118,27 @@ namespace DataAccess.Repositories
             {
                 return Result<User>.Failure(new Error(404, "Not Found", $"User with id: {userId} was not found"));
             }
+
+            return Result<User>.Success(user);
+        }
+
+        public async Task<Result<User>> GetUserByEmailAsync(string email)
+        {
+            var user = await _context.Users
+                .Where(u => u.Email == email).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return Result<User>.Failure(new Error(404, "Not Found", $"User with email: {email} was not found"));
+            }
+
+            return Result<User>.Success(user);
+        }
+
+        public async Task<Result<User>> CreateUserAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
 
             return Result<User>.Success(user);
         }

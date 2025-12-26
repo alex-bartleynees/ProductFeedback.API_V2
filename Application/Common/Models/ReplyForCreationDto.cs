@@ -8,6 +8,6 @@ namespace Application.Common.Models
 
         public string ReplyingTo { get; init; } = string.Empty;
 
-        public int UserId { get; init; }
+        public Guid UserId { get; init; }
     }
 }

@@ -13,8 +13,8 @@ namespace MinimalApi.EndpointDefinitions
         {
             var comments = app.MapGroup("/api/comment");
 
-            comments.MapPost("/", AddCommentToSuggestion);
-            comments.MapPost("reply", AddReplyToComment);
+            comments.MapPost("/", AddCommentToSuggestion).RequireAuthorization();
+            comments.MapPost("reply", AddReplyToComment).RequireAuthorization();
         }
 
         private async Task<Results<Ok<CommentToReturnDto>, NotFound<Error>>> AddCommentToSuggestion(IMediator mediator, CommentForCreationDto comment)
