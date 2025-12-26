@@ -130,3 +130,12 @@ affinity: {}
 redis:
   secretName: "redis-auth" # Update to your existing secret name
   passwordKey: "REDIS_PASSWORD" # Update to your secret's password key
+
+keycloak:
+  secretName: "keycloak-auth"
+  secretKeyName: "ADMIN_CLIENT_SECRET"
+
+blobstorage:
+  secretName: "blobstorage-auth"
+  accessKeyName: "BLOB_ACCESS_KEY"
+  secretKeyName: "BLOB_SECRET_KEY"

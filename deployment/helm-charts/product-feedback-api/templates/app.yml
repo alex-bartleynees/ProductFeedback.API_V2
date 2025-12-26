@@ -52,6 +52,21 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.redis.secretName }}
                   key: {{ .Values.redis.passwordKey }}
+            - name: Keycloak__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.keycloak.secretName }}
+                  key: {{ .Values.keycloak.secretKeyName }}
+            - name: BlobStorage__AccessKey
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.blobstorage.secretName }}
+                  key: {{ .Values.blobstorage.accessKeyName }}
+            - name: BlobStorage__SecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.blobstorage.secretName }}
+                  key: {{ .Values.blobstorage.secretKeyName }}
           envFrom:
             - configMapRef:
                 name: product-feedback-api-config

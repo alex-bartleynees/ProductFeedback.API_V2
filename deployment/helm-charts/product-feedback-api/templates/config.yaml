@@ -10,3 +10,6 @@ data:
   ConnectionStrings__RedisConnection: "redis-master.redis.svc.cluster.local:6379"
   Redis__UseTls: "true"
   Redis__Host: "redis-master.redis.svc.cluster.local"
+  BlobStorage__ServiceUrl: "http://seaweedfs-filer.seaweedfs.svc.cluster.local:8333"
+  BlobStorage__PublicUrl: "https://cdn.alexbartleynees.com"
+  BlobStorage__BucketName: "user-profile-images"

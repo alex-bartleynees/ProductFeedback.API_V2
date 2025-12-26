@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Application.Abstractions;
 using Application.Common.Models;
 using Application.Common.Validators;
@@ -9,6 +10,7 @@ using DataAccess.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MinimalApi.Abstractions;
 
@@ -69,6 +71,28 @@ namespace MinimalApi.Extensions
                     ?? throw new ArgumentNullException("Keycloak:BaseUrl", "Keycloak BaseUrl must be configured");
                 client.BaseAddress = new Uri(keycloakBaseUrl);
             });
+
+            // Blob Storage (SeaweedFS with S3 API)
+            builder.Services.Configure<BlobStorageSettings>(builder.Configuration.GetSection("BlobStorage"));
+            builder.Services.AddSingleton<IAmazonS3>(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<BlobStorageSettings>>().Value;
+                var config = new AmazonS3Config
+                {
+                    ServiceURL = settings.ServiceUrl,
+                    ForcePathStyle = settings.ForcePathStyle
+                };
+
+                // Use anonymous credentials if no access key configured (SeaweedFS without auth)
+                if (string.IsNullOrEmpty(settings.AccessKey))
+                {
+                    return new AmazonS3Client(new Amazon.Runtime.AnonymousAWSCredentials(), config);
+                }
+
+                var credentials = new Amazon.Runtime.BasicAWSCredentials(settings.AccessKey, settings.SecretKey);
+                return new AmazonS3Client(credentials, config);
+            });
+            builder.Services.AddScoped<IBlobStorageService, SeaweedFsBlobStorageService>();
 
             builder.Services.AddScoped<IValidator<SuggestionForCreationDto>, SuggestionForCreationDtoValidator>();
             builder.Services.AddScoped<IValidator<SuggestionForUpdateDto>, SuggestionForUpdateDtoValidator>();

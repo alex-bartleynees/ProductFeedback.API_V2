@@ -164,5 +164,20 @@ namespace DataAccess.Repositories
 
             return Result<Suggestion>.Failure(new Error(404, "Not Found", $"Suggestion with id: {suggestion.Id} was not found"));
         }
+
+        public async Task<Result<User>> UpdateUserImageAsync(Guid userId, string imageKey)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return Result<User>.Failure(new Error(404, "Not Found", $"User with id: {userId} was not found"));
+            }
+
+            user.Image = imageKey;
+            await _context.SaveChangesAsync();
+
+            return Result<User>.Success(user);
+        }
     }
 }

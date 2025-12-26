@@ -25,5 +25,7 @@ namespace Application.Abstractions
         Task<Result<int>> DeleteSuggestion(int suggestionId);
 
         Task<Result<Suggestion>> UpdateSuggestion(int suggestionId, Suggestion suggestion);
+
+        Task<Result<User>> UpdateUserImageAsync(Guid userId, string imageKey);
     }
 }

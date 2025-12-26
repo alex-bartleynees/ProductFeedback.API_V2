@@ -37,6 +37,26 @@ services:
     networks:
       - shared-network
 
+  seaweedfs:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweedfs
+    ports:
+      - "9333:9333"   # Master
+      - "8080:8080"   # Volume
+      - "8333:8333"   # Filer (S3 API)
+      - "8888:8888"   # Filer UI
+    command: "server -s3 -dir=/data"
+    volumes:
+      - seaweedfs-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9333/cluster/status || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - shared-network
+
   dotnet-web-api:
     build:
       context: .
@@ -50,11 +70,17 @@ services:
       ConnectionStrings__RedisConnection: "redis:6379"
       ConnectionStrings__OTLP_Endpoint: "http://otel-collector:4317"
       Keycloak__ClientSecret: ${ADMIN_CLIENT_SECRET}
+      BlobStorage__ServiceUrl: "http://seaweedfs:8333"
+      BlobStorage__PublicUrl: "http://localhost:8333"
+      BlobStorage__BucketName: "user-profile-images"
     depends_on:
       postgres:
         condition: service_healthy
         restart: true
       redis:
+        condition: service_healthy
+        restart: true
+      seaweedfs:
         condition: service_healthy
         restart: true
     develop:
@@ -155,6 +181,7 @@ services:
 volumes:
   postgres-data:
   redis-data:
+  seaweedfs-data:
   grafana-data:
   prometheus-data:
 
