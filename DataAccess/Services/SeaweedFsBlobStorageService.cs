@@ -115,10 +115,11 @@ namespace DataAccess.Services
             CancellationToken cancellationToken = default)
         {
             // Bucket has public read access, return direct URL
+            // SeaweedFS S3 filer exposes files under /buckets/<bucket-name>/<key>
             var baseUrl = !string.IsNullOrEmpty(_settings.PublicUrl)
                 ? _settings.PublicUrl
                 : _settings.ServiceUrl;
-            var url = $"{baseUrl.TrimEnd('/')}/{_settings.BucketName}/{key}";
+            var url = $"{baseUrl.TrimEnd('/')}/buckets/{_settings.BucketName}/{key}";
             return Task.FromResult(Result<string>.Success(url));
         }
     }
