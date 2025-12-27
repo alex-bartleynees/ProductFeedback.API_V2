@@ -80,7 +80,8 @@ namespace MinimalApi.Extensions
                 var config = new AmazonS3Config
                 {
                     ServiceURL = settings.ServiceUrl,
-                    ForcePathStyle = settings.ForcePathStyle
+                    ForcePathStyle = settings.ForcePathStyle,
+                    UseHttp = settings.ServiceUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
                 };
 
                 // Use anonymous credentials if no access key configured (SeaweedFS without auth)
