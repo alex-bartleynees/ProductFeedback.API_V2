@@ -114,42 +114,12 @@ namespace DataAccess.Services
             string key,
             CancellationToken cancellationToken = default)
         {
-            try
-            {
-                // If no credentials configured, return direct URL (SeaweedFS without auth)
-                if (string.IsNullOrEmpty(_settings.AccessKey))
-                {
-                    var baseUrl = !string.IsNullOrEmpty(_settings.PublicUrl)
-                        ? _settings.PublicUrl
-                        : _settings.ServiceUrl;
-                    var directUrl = $"{baseUrl.TrimEnd('/')}/{_settings.BucketName}/{key}";
-                    return Task.FromResult(Result<string>.Success(directUrl));
-                }
-
-                var request = new GetPreSignedUrlRequest
-                {
-                    BucketName = _settings.BucketName,
-                    Key = key,
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    Verb = HttpVerb.GET
-                };
-
-                var url = _s3Client.GetPreSignedURL(request);
-
-                // Replace internal service URL with public URL if configured
-                if (!string.IsNullOrEmpty(_settings.PublicUrl))
-                {
-                    url = url.Replace(_settings.ServiceUrl.TrimEnd('/'), _settings.PublicUrl.TrimEnd('/'));
-                }
-
-                return Task.FromResult(Result<string>.Success(url));
-            }
-            catch (AmazonS3Exception ex)
-            {
-                _logger.LogError(ex, "Failed to generate URL for blob: {BlobKey}", key);
-                return Task.FromResult(Result<string>.Failure(
-                    new Error(500, "Storage Error", $"Failed to generate URL: {ex.Message}")));
-            }
+            // Bucket has public read access, return direct URL
+            var baseUrl = !string.IsNullOrEmpty(_settings.PublicUrl)
+                ? _settings.PublicUrl
+                : _settings.ServiceUrl;
+            var url = $"{baseUrl.TrimEnd('/')}/{_settings.BucketName}/{key}";
+            return Task.FromResult(Result<string>.Success(url));
         }
     }
 }
