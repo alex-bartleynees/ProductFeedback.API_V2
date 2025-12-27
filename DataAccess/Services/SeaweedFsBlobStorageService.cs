@@ -135,6 +135,13 @@ namespace DataAccess.Services
                 };
 
                 var url = _s3Client.GetPreSignedURL(request);
+
+                // Replace internal service URL with public URL if configured
+                if (!string.IsNullOrEmpty(_settings.PublicUrl))
+                {
+                    url = url.Replace(_settings.ServiceUrl.TrimEnd('/'), _settings.PublicUrl.TrimEnd('/'));
+                }
+
                 return Task.FromResult(Result<string>.Success(url));
             }
             catch (AmazonS3Exception ex)
